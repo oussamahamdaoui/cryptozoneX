@@ -1,0 +1,13 @@
+@mixin button {
+    padding: 1rem 2rem;
+    border: 1px solid var(--neutral-12);
+}
+
+@mixin hide-scrollbar {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

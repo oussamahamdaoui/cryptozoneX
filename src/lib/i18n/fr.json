@@ -1,0 +1,67 @@
+{
+    "fr": {
+        "or":"ou",
+        "continueWith":"Continuez avec",
+        "greeting":{
+            "default":"Bonjour",
+            "name":"Bonjour %{name}"
+        },
+        "login":"Connexion",
+        "searchLabel":"Rechercher...",
+        "noAccount":"Vous n'avez pas de compte ?",
+        "haveAccount":"Vous avez un compte ? ",
+        "createAccount":"Créer votre compte",
+        "useAccount":"S'identifier",
+        "categories":{
+            "all": "All",
+            "arts-crafts": "Arts & Crafts",
+            "automotive": "Automotive",
+            "baby-products": "Baby",
+            "beauty": "Beauty & Personal Care",
+            "stripbooks": "Books",
+            "fashion-boys": "Boys' Fashion",
+            "computers": "Computers",
+            "deals": "Deals",
+            "digital-music": "Digital Music",
+            "electronics": "Electronics",
+            "fashion-girls": "Girls' Fashion",
+            "hpc": "Health & Household",
+            "kitchen": "Home & Kitchen",
+            "industrial": "Industrial & Scientific",
+            "digital-text": "Kindle Store",
+            "luggage": "Luggage",
+            "fashion-mens": "Men's Fashion",
+            "movies-tv": "Movies & TV",
+            "music": "Music, CDs & Vinyl",
+            "pets": "Pet Supplies",
+            "software": "Software",
+            "sporting": "Sports & Outdoors",
+            "tools": "Tools & Home Improvement",
+            "toys-and-games": "Toys & Games",
+            "videogames": "Video Games",
+            "fashion-womens": "Women's Fashion"
+        },
+        "theme":{
+            "light":"Thème clair",
+            "dark": "Thème sombre"
+        },
+        "language":{
+            "fr":"Francais",
+            "en":"Anglais"
+        },
+        "date":{
+            "weekDays":{
+                "short":["Lun","Mar","Mer","Jeu","Ven","Sam", "Dim"],
+                "full":["Lundi", "Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"]
+            },
+            "months":{
+                "full":["Janvier","Fevrier","Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "September", "Octobre", "Novembre", "Decembre"]
+            },
+            "today":"Aujourd'hui",
+            "format":{
+                
+            }
+        }
+       
+    }
+}

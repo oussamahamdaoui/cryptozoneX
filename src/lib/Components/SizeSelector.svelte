@@ -1,0 +1,31 @@
+<script>
+    import RadioSelector from "./RadioSelector.svelte";
+    const sizes = [
+        {
+            name:"S",
+            color:undefined,
+        },
+        {
+            name:"M",
+            color:undefined,
+        },
+        {
+            name:"L",
+            color:undefined,
+        },
+        {
+            name:"XL",
+            color:undefined,
+        },
+        {
+            name:"XXL",
+            color:undefined,
+        },
+    ]
+</script>
+<RadioSelector 
+options={sizes} 
+withCheck={false} 
+selectionLabel="Size:"
+class="size-selector"
+></RadioSelector>
