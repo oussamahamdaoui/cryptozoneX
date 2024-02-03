@@ -9,7 +9,7 @@
             theme.set("light");
         }
     };
-    $:other = $theme === "dark" ? "light":"dark";
+    $: other = $theme === "dark" ? "light" : "dark";
 </script>
 
 <button on:click={select} class="theme-selector">
@@ -32,7 +32,7 @@
         padding: 0.5rem;
         border-radius: 3px;
         border: 1px solid transparent;
-        &:hover{
+        &:hover {
             background-color: var(--neutral-3);
         }
     }

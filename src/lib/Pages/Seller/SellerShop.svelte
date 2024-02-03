@@ -38,7 +38,7 @@
     };
 
     const addSection = async (section) => {
-        if(selectedTab !== "page"){
+        if (selectedTab !== "page") {
             selectedTab = "page";
         }
         const paramsComp = await createParam(section);
@@ -79,21 +79,24 @@
     let iframe;
     let iframeLoaded = true;
     /**@type {MutationObserver} */
-    
 
-    onMount(()=>{
-        const observer = new MutationObserver(()=>{
-            if(iframe){
+    onMount(() => {
+        const observer = new MutationObserver(() => {
+            if (iframe) {
                 iframe.contentWindow.document.head.replaceWith(
                     document.head.cloneNode(true)
                 );
             }
         });
-        observer.observe(document.head, { attributes: true, childList: true, subtree: true });
-        return ()=>{
+        observer.observe(document.head, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+        });
+        return () => {
             observer.disconnect();
-        }
-    })
+        };
+    });
     $: {
         sectionParams[selectedPage] = sectionParams[selectedPage] ?? [];
         sections = sectionParams[selectedPage].map((e) => ({
@@ -109,8 +112,8 @@
         if (iframe) {
             iframe.contentWindow.document.body.innerHTML = "";
             iframe.contentWindow.document.head.replaceWith(
-                    document.head.cloneNode(true)
-                );
+                document.head.cloneNode(true)
+            );
             new PreviewApp({
                 target: iframe.contentWindow.document.body,
                 props: {
@@ -157,13 +160,38 @@
                     {/if}
                     <Drag let:swap {onSwap}>
                         {#each sectionParams[selectedPage] as component (component.id)}
-                            <Draggable {swap} remove={removeSection(component.id)}>
-                                <svelte:component
-                                    this={component.comp}
-                                    id={component.id}
-                                    bind:params={params[selectedPage][lang][
-                                        component.id
-                                    ]}/>
+                            <Draggable {swap} let:dragger let:moving>
+                                <div class="top">
+                                    <button
+                                        class="dragger"
+                                        use:dragger
+                                        class:moving
+                                    >
+                                        <i class="ri-draggable" />
+                                    </button>
+                                    <button class="close">
+                                        <i
+                                            class={!closed
+                                                ? "ri-contract-up-down-line"
+                                                : "ri-expand-up-down-line"}
+                                        />
+                                    </button>
+                                    <button
+                                        class="remove"
+                                        on:click={removeSection(component.id)}
+                                    >
+                                        <i class="ri-close-line" />
+                                    </button>
+                                </div>
+                                <div class="content">
+                                    <svelte:component
+                                        this={component.comp}
+                                        id={component.id}
+                                        bind:params={params[selectedPage][lang][
+                                            component.id
+                                        ]}
+                                    />
+                                </div>
                             </Draggable>
                         {/each}
                     </Drag>
@@ -211,7 +239,6 @@
             min-width: 100%;
         }
 
-      
         .line {
             width: 1px;
             align-self: stretch;
@@ -260,7 +287,7 @@
             border: 2px solid var(--neutral-9);
             margin-top: 2rem;
             opacity: 0;
-            &.loaded{
+            &.loaded {
                 opacity: 1;
             }
         }
@@ -275,6 +302,56 @@
                 margin-top: auto;
                 margin-bottom: auto;
                 color: var(--neutral-8);
+            }
+            :global(.draggable) {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                background-color: var(--neutral-2);
+                border: 1px solid var(--neutral-7);
+                border-radius: 5px;
+                margin-bottom: 1rem;
+                margin-top: 1rem;
+            }
+
+            .content {
+                padding: 1rem;
+                flex: 1;
+                // &.closed {
+                //     max-height: 3.5rem;
+                //     overflow-y: hidden;
+                // }
+            }
+
+            .top {
+                display: flex;
+                border-radius: 5px 5px 0px 0px;
+                overflow: hidden;
+                border-bottom: 1px solid var(--neutral-7);
+                button {
+                    user-select: none;
+                    touch-action: none;
+                    background-color: transparent;
+                    border: none;
+                    padding: 1rem;
+                    cursor: pointer;
+                    &.moving {
+                        cursor: grabbing !important;
+                    }
+                    &.dragger {
+                        cursor: grab;
+                    }
+                    &.remove {
+                        color: var(--red-9);
+                        &:hover {
+                            color: var(--red-10);
+                            background-color: var(--red-a3);
+                        }
+                    }
+                    &:hover {
+                        background-color: var(--neutral-3);
+                    }
+                }
             }
         }
         :global(.shop-editor) {

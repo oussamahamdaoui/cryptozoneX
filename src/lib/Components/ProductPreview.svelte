@@ -1,10 +1,29 @@
 <script>
+    import { derived } from "svelte/store";
+    import { t as tt } from "../Stores/lang";
     import Accordion from "./Accordion.svelte";
     import AccordionSection from "./AccordionSection.svelte";
-    import ColorSelector from "./ColorSelector.svelte";
     import Price from "./Price.svelte";
     import Rateing from "./Rating.svelte";
     import SizeSelector from "./SizeSelector.svelte";
+    /*** @type {string}*/
+    export let id = undefined;
+    /*** @type {string}*/
+    export let locale = undefined;
+    let loading = false;
+    const t = derived(tt, () => (p) => {
+        if (locale) {
+            return $tt(p, { locale });
+        }
+        return $tt(p);
+    });
+    $: {
+        $t;
+        loading = true;
+        setTimeout(() => {
+            loading = false;
+        }, 200);
+    }
 </script>
 
 <div class="product-preview">
@@ -31,60 +50,88 @@
         </div>
     </div>
     <div class="info">
-        <h1>Sony FE 18-135mm f/3.5-5.6 OSS | Optique Monture E, Zoom APS-C</h1>
-        <h3>Seller: <a href="/">05RFC1230</a></h3>
-        <Rateing value={1.6} disabled></Rateing>
-        <div class="line"></div>
+        <div class="loader" class:visible={loading}>
+            <i class="ri-loader-3-line" />
+        </div>
+        <h1>{$t(`products.${id}.productName`)}</h1>
+        <h5>Seller: <a href="/">05RFC1230</a></h5>
+        <Rateing value={1.6} disabled />
+        <div class="line" />
         <h2 class="price">
             <span class="promo">-50%</span>
-            <Price></Price>
+            <Price />
         </h2>
-        <h4 class="old-price">
-            Old Price: <Price lineTrough></Price>
-        </h4>
-        <ColorSelector />
+        <!-- <h4 class="old-price">
+            Old Price: <Price lineTrough />
+        </h4> -->
+        {#if $t(`products.${id}.variations`)}
+            {#each $t(`products.${id}.variations`) as variation (variation.id)}
+                {#if variation.name}
+                    <h3>{variation.name}</h3>
+                {/if}
+                {#await import(`./ProductProps/${variation.type}/index.svelte`) then p}
+                    <svelte:component this={p.default} {...variation.props} />
+                {/await}
+            {/each}
+        {/if}
         <SizeSelector />
         <div class="buttons">
             <button class="primary">Add to cart</button>
             <button class="secondary"><i class="ri-heart-2-fill" /></button>
         </div>
         <Accordion opened={[]} let:toggle let:opened>
-            <AccordionSection name="details" {opened} toggle={toggle("details")}>
+            <AccordionSection
+                name="details"
+                {opened}
+                toggle={toggle("details")}
+            >
                 <slot slot="head" let:isOpen>
-                    Product details 
-                    <i class={isOpen ? "ri-subtract-line" : "ri-add-line"}></i>
+                    Product details
+                    <i class={isOpen ? "ri-subtract-line" : "ri-add-line"} />
                 </slot>
                 <slot slot="content">
                     Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                     Deleniti, nostrum beatae ab, non cumque dicta suscipit
                     placeat corrupti molestiae sit ea a tempora velit nisi autem
-                    neque eligendi. Repellat, quod?</slot>
+                    neque eligendi. Repellat, quod?</slot
+                >
             </AccordionSection>
             <AccordionSection name="size" {opened} toggle={toggle("size")}>
                 <slot slot="head" let:isOpen>
                     Size & Fit
-                    <i class={isOpen ? "ri-subtract-line" : "ri-add-line"}></i>
+                    <i class={isOpen ? "ri-subtract-line" : "ri-add-line"} />
                 </slot>
-                <slot slot="content">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                <slot slot="content"
+                    >Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                     Deleniti, nostrum beatae ab, non cumque dicta suscipit
                     placeat corrupti molestiae sit ea a tempora velit nisi autem
-                    neque eligendi. Repellat, quod?</slot>
+                    neque eligendi. Repellat, quod?</slot
+                >
             </AccordionSection>
-            <AccordionSection name="material" {opened} toggle={toggle("material")}>
+            <AccordionSection
+                name="material"
+                {opened}
+                toggle={toggle("material")}
+            >
                 <slot slot="head" let:isOpen>
                     Material
-                    <i class={isOpen ? "ri-subtract-line" : "ri-add-line"}></i>
+                    <i class={isOpen ? "ri-subtract-line" : "ri-add-line"} />
                 </slot>
                 <slot slot="content">
                     Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                     Deleniti, nostrum beatae ab, non cumque dicta suscipit
                     placeat corrupti molestiae sit ea a tempora velit nisi autem
-                    neque eligendi. Repellat, quod?</slot>
+                    neque eligendi. Repellat, quod?</slot
+                >
             </AccordionSection>
-            <AccordionSection name="reviews" {opened} toggle={toggle("reviews")}>
+            <AccordionSection
+                name="reviews"
+                {opened}
+                toggle={toggle("reviews")}
+            >
                 <slot slot="head" let:isOpen>
                     Reviews
-                    <i class={isOpen ? "ri-subtract-line" : "ri-add-line"}></i>
+                    <i class={isOpen ? "ri-subtract-line" : "ri-add-line"} />
                 </slot>
                 <slot slot="content">
                     Lorem ipsum dolor sit amet consectetur, adipisicing elit.
@@ -101,13 +148,13 @@
     @use "../../globals.scss";
     .product-preview {
         display: flex;
-        padding: 2rem;
-        gap: 2rem;
+        padding: 1rem;
+        gap: 1rem;
         :global(.color-selector),
         :global(.size-selector) {
             margin-top: 1rem;
         }
-        :global(.accordion-section .content){
+        :global(.accordion-section .content) {
             font-size: 0.8rem;
             padding: 1rem 5rem 1rem 0;
         }
@@ -132,7 +179,7 @@
                     aspect-ratio: 1/1;
                     background-color: var(--neutral-4);
                     border: 1.5px solid transparent;
-                    &.selected{
+                    &.selected {
                         border-color: var(--neutral-12);
                     }
                 }
@@ -167,6 +214,7 @@
         }
         .info {
             flex: 4;
+            position: relative;
             .buttons {
                 margin-top: 3rem;
                 margin-bottom: 3rem;
@@ -194,66 +242,86 @@
                 font-size: 1.5rem;
                 margin-bottom: 0.1rem;
             }
-            .price{
+            .price {
                 font-size: 2rem;
                 margin-bottom: 0.1rem;
-                .promo{
+                .promo {
                     font-weight: 300;
                     color: var(--red-10);
                     font-size: 1.5rem;
                 }
             }
-            .old-price{
+            .old-price {
                 font-size: 0.8rem;
                 color: var(--neutral-11);
                 margin-bottom: 1rem;
                 font-weight: 400;
             }
-            h3 {
+            h5 {
                 font-size: 0.8rem;
                 font-weight: 500;
                 color: var(--neutral-9);
-                margin-bottom: .2rem;
+                margin-bottom: 0.2rem;
             }
-            
+            .loader {
+                position: absolute;
+                background-color: var(--neutral-1);
+                justify-content: center;
+                align-items: center;
+                z-index: 99;
+                height: 100%;
+                width: 100%;
+                font-size: 2rem;
+                display: none;
+                &.visible {
+                    display: flex;
+                }
+                i {
+                    animation: rotate 1.5s linear infinite;
+                    @keyframes rotate {
+                        to {
+                            transform: rotate(360deg);
+                        }
+                    }
+                }
+            }
         }
-        .line{
+        .line {
             width: 100%;
             height: 1px;
             background-color: var(--neutral-4);
-            margin-top: .5rem;
-            margin-bottom: .5rem;
-
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
         }
     }
     @media (min-width: 300px) and (max-width: 1001px) {
-        .product-preview{
+        .product-preview {
             flex-direction: column;
         }
     }
     @media (min-width: 300px) and (max-width: 601px) {
-        .product-preview{
+        .product-preview {
             height: auto;
-            .player{
+            .player {
                 flex-direction: column-reverse;
-                .preview{
+                .preview {
                     width: 100%;
                     height: 90px;
                     overflow-x: auto;
                     flex: unset;
-                    .wrapper{
+                    .wrapper {
                         flex-direction: row;
                         height: 100%;
-                        .img{
+                        .img {
                             height: 100%;
                             width: auto;
                         }
                     }
-                } 
-                .slider{
+                }
+                .slider {
                     height: 500px;
                     flex: unset;
-                    .controls{
+                    .controls {
                         padding: 1rem;
                     }
                 }

@@ -9,10 +9,9 @@
     let timout;
     export { text };
     export let timeoutShow = 100;
+    export let timoutHide = 100;
     let pos = "bottom-center";
     let content;
-
-
 
     $: visible &&
         (() => {
@@ -22,30 +21,34 @@
             let xPos = "center";
             y = box.top;
             x = box.left + box.width / 2;
-            if(x+contentBox.width/2 > document.body.clientWidth){
+            if (x + contentBox.width / 2 > document.body.clientWidth) {
                 xPos = "left";
             }
-            if(x-contentBox.width/2 < 0){
+            if (x - contentBox.width / 2 < 0) {
                 xPos = "right";
             }
-            if(y + box.height + contentBox.height > window.innerHeight){
+            if (y + box.height + contentBox.height > window.innerHeight) {
                 yPos = "top";
             }
-            pos = `${yPos}-${xPos}`
+            pos = `${yPos}-${xPos}`;
         })();
 
     const hideTooltip = () => {
         clearTimeout(timout);
-        visible = false;
+        timout = setTimeout(() => {
+            visible = false;
+        }, timoutHide);
     };
+
     const showTooltip = () => {
+        clearTimeout(timout);
         timout = setTimeout(() => {
             visible = true;
         }, timeoutShow);
     };
 
     onMount(() => {
-        const sc =  () =>{
+        const sc = () => {
             visible = false;
         };
         document.addEventListener("scroll", sc, true);
@@ -55,12 +58,14 @@
     });
 </script>
 
-<div class="tool-tip"
+<div
+    class="tool-tip"
     style="--x:{x};--y:{y}"
     bind:this={self}
     on:mouseenter={showTooltip}
     on:mouseleave={hideTooltip}
-    role="tooltip">
+    role="tooltip"
+>
     <div class="tool-tip-content {pos}" class:visible bind:this={content}>
         <slot name="content">
             <div class="text">{text}</div>
@@ -78,22 +83,23 @@
     }
 
     .tool-tip-content {
-        &.bottom-right{
+        color: var(--neutral-11) !important;
+        &.bottom-right {
             transform: translate(0%, 60%);
         }
-        &.bottom-left{
+        &.bottom-left {
             transform: translate(-100%, 60%);
         }
-        &.bottom-center{
+        &.bottom-center {
             transform: translate(-50%, 60%);
         }
-        &.top-right{
+        &.top-right {
             transform: translate(0%, -110%);
         }
-        &.top-left{
+        &.top-left {
             transform: translate(-100%, -110%);
         }
-        &.top-center{
+        &.top-center {
             transform: translate(-50%, -110%);
         }
         position: fixed;
@@ -103,7 +109,7 @@
         opacity: 0;
         background-color: var(--neutral-1);
         color: var(--slate12);
-        padding: 0.5rem ;
+        padding: 0.5rem;
         border-radius: 3px;
         border: 1px solid var(--neutral-7);
         font-size: 12px;
@@ -117,6 +123,7 @@
         &.visible {
             opacity: 1;
             z-index: 100;
+            pointer-events: unset;
         }
     }
 </style>

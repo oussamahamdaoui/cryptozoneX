@@ -1,10 +1,14 @@
 <script>
     import { currency } from "../Stores/currency";
+    import { cls } from "../utils";
     import DropDown from "./DropDown.svelte";
     let value = "EUR";
-    $:currency.set(value);
+    export let global = true;
+    $: global && currency.set(value);
 </script>
-<DropDown bind:value={value} class="currency-selector">
+
+<DropDown bind:value class="currency-selector {cls({ global })}">
+    <slot name="label" slot="label" />
     <slot slot="value" let:value>{value}</slot>
     <slot slot="options" let:change>
         <button on:click={change("EUR")}>EUR</button>
@@ -13,8 +17,7 @@
 </DropDown>
 
 <style lang="scss">
-    @use "/src/globals.scss";
-    :global(.currency-selector .value){
+    :global(.currency-selector.global .value) {
         padding: 0.5rem;
         padding-right: 0rem !important;
     }

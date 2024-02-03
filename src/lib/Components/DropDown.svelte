@@ -55,9 +55,11 @@
     on:focusin={focusOut}
 />
 <div class="drop-down {cls}" class:open={isOpen}>
-    <button class="value"
+    <button
+        class="value"
         on:click={() => (isOpen = !isOpen)}
-        bind:this={oppener}>
+        bind:this={oppener}
+    >
         <slot name="value" {value} />
         <i class="ri-arrow-drop-down-line" />
     </button>
@@ -65,7 +67,7 @@
         <slot name="options" {change} {value} />
     </div>
     <div class="label">
-        <slot name="label"></slot>
+        <slot name="label" />
     </div>
 </div>
 
@@ -78,10 +80,10 @@
         z-index: 1;
         height: 52px;
         &:focus-within {
-            .value{
-                border:1px solid var(--primary-8);
+            .value {
+                border: 1px solid var(--primary-8);
             }
-            .label{
+            .label {
                 color: var(--primary-8);
             }
         }
@@ -130,6 +132,7 @@
             position: absolute;
             top: calc(100% + 0.5rem);
             display: none;
+            padding: 0.5rem;
             background-color: var(--neutral-1);
             min-width: 100%;
             border: 1px solid var(--neutral-7);
@@ -139,11 +142,11 @@
             border-radius: 3px;
         }
 
-        .label{
+        .label {
             position: absolute;
             font-size: 0.6rem;
-            top:0;
-            left:1rem;
+            top: 0;
+            left: 1rem;
             transform: translateY(-50%);
             background-color: var(--bg, var(--neutral-1));
             padding-left: 0.5rem;

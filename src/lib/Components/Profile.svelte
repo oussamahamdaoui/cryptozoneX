@@ -12,10 +12,10 @@
             clearTimeout(timeout);
         }
     };
-    const logOut = ()=>{
+    const logOut = () => {
         user.set(null);
-        goTo('/');
-    }
+        goTo("/");
+    };
     const closeMenu = () => {
         timeout = setTimeout(() => {
             isOpen = false;
@@ -27,7 +27,8 @@
     class="profile"
     on:mouseenter={openMenu}
     on:mouseleave={closeMenu}
-    role="tooltip">
+    role="tooltip"
+>
     {#if $user}
         <button>
             <i class="ri-user-3-fill" />
@@ -54,7 +55,7 @@
                 <i class="ri-user-3-fill" />
                 <span>{$t("login")}</span>
             </Link>
-            <ThemeSelector iconOnly/>
+            <ThemeSelector iconOnly />
         </div>
     {/if}
 </div>
@@ -70,20 +71,20 @@
                 color: var(--neutral-12);
             }
         }
-        .flex{
+        .flex {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap:1rem;
-            :global(a){
+            gap: 1rem;
+            :global(a) {
                 padding: 0.5rem;
                 border-radius: 3px;
-                padding-right: 1rem ;
-                border:1px solid transparent;
+                padding-right: 1rem;
+                border: 1px solid transparent;
 
-                &:hover{
-                    border:1px solid var(--primary-8);
-                    background-color:var(--primary-4);
+                &:hover {
+                    border: 1px solid var(--primary-8);
+                    background-color: var(--primary-4);
                 }
             }
         }

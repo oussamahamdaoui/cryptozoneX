@@ -12,8 +12,9 @@
   import Page404 from "./lib/Pages/Page404.svelte";
   import SellerProducts from "./lib/Pages/Seller/SellerProducts.svelte";
   import Cart from "./lib/Pages/Cart/index.svelte";
-    import ProductPreview from "./lib/Components/ProductPreview.svelte";
-  const STORE = /\/s\/[a-z\-]{1,10}$/;
+  import ProductPreview from "./lib/Components/ProductPreview.svelte";
+  import Test from "./lib/Pages/Test.svelte";
+  const STORE = /\/s\/[a-z-]{1,10}$/;
   const LOGIN = /\/(login|sign-up)/;
   const SEARCH = "/search";
   const SHOP_DASHBOARD = "/my-shop";
@@ -22,7 +23,7 @@
   const PAGE_404 = /.*/;
   const SELLER_PRODUCTS = "/products";
   const CART = "/cart";
-  const PRODUCT = /\/p\/[a-z\-]{1,10}$/;
+  const PRODUCT = /\/p\/[a-z-]{1,10}$/;
 </script>
 
 <main>
@@ -66,6 +67,10 @@
         <SellerProducts />
       </Route>
     {/if}
+    <Route pathname={"/test"}>
+      <TopMenu />
+      <Test />
+    </Route>
     <Route pathname={PAGE_404} is404>
       <TopMenu />
       <Page404 />

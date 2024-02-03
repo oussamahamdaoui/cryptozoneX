@@ -1,8 +1,14 @@
-const propTypes = [
+export const propTypes = [
     {
-        name:"color",
+        name: "Color",
+        linkedKeys: ['colors[].color']
     },
     {
-        name:"color",
+        name: "Option",
+        linkedKeys: ['default']
+    },
+    {
+        name: "CheckBox",
+        linkedKeys: ['default']
     }
 ]

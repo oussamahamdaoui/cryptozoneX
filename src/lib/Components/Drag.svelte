@@ -37,6 +37,5 @@
 <style lang="scss">
     .drag{
         position: relative;
-        padding-top: 1rem;
     }
 </style>

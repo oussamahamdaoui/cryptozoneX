@@ -1,15 +1,15 @@
 {
-    "en":{
-        "greeting":{
-            "default":"hello",
-            "name":"Hello %{name}"
+    "en": {
+        "greeting": {
+            "default": "hello",
+            "name": "Hello %{name}"
         },
-        "login":"Login",
-        "language":{
-            "fr":"French",
-            "en":"English"
+        "login": "Login",
+        "language": {
+            "fr": "French",
+            "en": "English"
         },
-        "categories":{
+        "categories": {
             "all": "All",
             "arts-crafts": "Arts & Crafts",
             "automotive": "Automotive",
@@ -38,14 +38,39 @@
             "videogames": "Video Games",
             "fashion-womens": "Women's Fashion"
         },
-        "date":{
-            "weekDays":{
-                "short":["Mon","Tue","Wed","Thu","Fri","Sat", "Sun"]
+        "theme": {
+            "light": "Light theme",
+            "dark": "Dark theme"
+        },
+        "date": {
+            "weekDays": {
+                "short": [
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu",
+                    "Fri",
+                    "Sat",
+                    "Sun"
+                ]
             },
-            "months":{
-                "full":["January","February","March", "April", "May", "Jun", "July", "August", "September", "Octobre", "Novembre", "Decembre"]
+            "months": {
+                "full": [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "Jun",
+                    "July",
+                    "August",
+                    "September",
+                    "Octobre",
+                    "Novembre",
+                    "Decembre"
+                ]
             },
-            "today":"Today"
+            "today": "Today"
         }
     }
 }

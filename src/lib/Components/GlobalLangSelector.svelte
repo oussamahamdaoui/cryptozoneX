@@ -1,11 +1,11 @@
 <script>
-    import { lang, t, DEFAULT_LANG, SUPPORTED_LANGS } from "../Stores/lang";
+    import { lang, t, SUPPORTED_LANGS } from "../Stores/lang";
     import DropDown from "./DropDown.svelte";
     let selected = $lang;
-    lang.subscribe((e)=>{
+    lang.subscribe((e) => {
         selected = e;
     });
-    $:lang.set(selected);
+    $: lang.set(selected);
 </script>
 
 <DropDown bind:value={selected} class="lang-selector">
@@ -18,7 +18,7 @@
 </DropDown>
 
 <style lang="scss">
-    :global(.lang-selector .value){
+    :global(.lang-selector .value) {
         padding: 0.5rem;
         padding-right: 0rem !important;
     }
