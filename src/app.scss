@@ -1,47 +1,45 @@
 @use "./globals.scss";
 @use "./colors.scss";
 
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
-
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family:  'Helvetica Neue';
-  font-family: 'Inter', sans-serif;
+  font-family: "Helvetica Neue";
+  font-family: "Inter", sans-serif;
 }
 
-main{
+main {
   // overflow: hidden;
   min-height: 100vh;
 }
-.page{
+.page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   max-width: 100vw;
 }
-body{
-  color:var(--neutral-12);
+body {
+  color: var(--neutral-12);
   background-color: var(--neutral-1);
   font-size: 18px;
 }
 
-a{
+a {
   text-decoration: none;
   color: var(--neutral-12);
 }
 
-button{
+button {
   outline: none;
   cursor: pointer;
-  color:var(--neutral-12);
+  color: var(--neutral-12);
 }
 
-
 @media (min-width: 300px) and (max-width: 801px) {
-  .page{
+  .page {
     padding-top: 5rem;
   }
 }

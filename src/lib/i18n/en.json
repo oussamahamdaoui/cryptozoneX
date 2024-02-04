@@ -1,76 +1,104 @@
 {
-    "en": {
-        "greeting": {
-            "default": "hello",
-            "name": "Hello %{name}"
-        },
-        "login": "Login",
-        "language": {
-            "fr": "French",
-            "en": "English"
-        },
-        "categories": {
-            "all": "All",
-            "arts-crafts": "Arts & Crafts",
-            "automotive": "Automotive",
-            "baby-products": "Baby",
-            "beauty": "Beauty & Personal Care",
-            "stripbooks": "Books",
-            "fashion-boys": "Boys' Fashion",
-            "computers": "Computers",
-            "deals": "Deals",
-            "digital-music": "Digital Music",
-            "electronics": "Electronics",
-            "fashion-girls": "Girls' Fashion",
-            "hpc": "Health & Household",
-            "kitchen": "Home & Kitchen",
-            "industrial": "Industrial & Scientific",
-            "digital-text": "Kindle Store",
-            "luggage": "Luggage",
-            "fashion-mens": "Men's Fashion",
-            "movies-tv": "Movies & TV",
-            "music": "Music, CDs & Vinyl",
-            "pets": "Pet Supplies",
-            "software": "Software",
-            "sporting": "Sports & Outdoors",
-            "tools": "Tools & Home Improvement",
-            "toys-and-games": "Toys & Games",
-            "videogames": "Video Games",
-            "fashion-womens": "Women's Fashion"
-        },
-        "theme": {
-            "light": "Light theme",
-            "dark": "Dark theme"
-        },
-        "date": {
-            "weekDays": {
-                "short": [
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu",
-                    "Fri",
-                    "Sat",
-                    "Sun"
-                ]
-            },
-            "months": {
-                "full": [
-                    "January",
-                    "February",
-                    "March",
-                    "April",
-                    "May",
-                    "Jun",
-                    "July",
-                    "August",
-                    "September",
-                    "Octobre",
-                    "Novembre",
-                    "Decembre"
-                ]
-            },
-            "today": "Today"
-        }
+  "en": {
+    "greeting": {
+      "default": "hello",
+      "name": "Hello %{name}"
+    },
+    "login": {
+      "login": "Login",
+      "noAccount": "No account?",
+      "haveAccount": "You have an account?",
+      "createAccount": "Create an account",
+      "useAccount": "Login",
+      "continueWith": "Continue with"
+    },
+    "language": {
+      "fr": "French",
+      "en": "English"
+    },
+    "categories": {
+      "all": "All",
+      "arts-crafts": "Arts & Crafts",
+      "automotive": "Automotive",
+      "baby-products": "Baby",
+      "beauty": "Beauty & Personal Care",
+      "stripbooks": "Books",
+      "fashion-boys": "Boys' Fashion",
+      "computers": "Computers",
+      "deals": "Deals",
+      "digital-music": "Digital Music",
+      "electronics": "Electronics",
+      "fashion-girls": "Girls' Fashion",
+      "hpc": "Health & Household",
+      "kitchen": "Home & Kitchen",
+      "industrial": "Industrial & Scientific",
+      "digital-text": "Kindle Store",
+      "luggage": "Luggage",
+      "fashion-mens": "Men's Fashion",
+      "movies-tv": "Movies & TV",
+      "music": "Music, CDs & Vinyl",
+      "pets": "Pet Supplies",
+      "software": "Software",
+      "sporting": "Sports & Outdoors",
+      "tools": "Tools & Home Improvement",
+      "toys-and-games": "Toys & Games",
+      "videogames": "Video Games",
+      "fashion-womens": "Women's Fashion"
+    },
+    "theme": {
+      "light": "Light theme",
+      "dark": "Dark theme"
+    },
+    "date": {
+      "weekDays": {
+        "short": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat",
+          "Sun"
+        ]
+      },
+      "months": {
+        "full": [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "Jun",
+          "July",
+          "August",
+          "September",
+          "Octobre",
+          "Novembre",
+          "Decembre"
+        ]
+      },
+      "today": "Today"
+    },
+    "globals": {
+      "currency": "Currency",
+      "linkHere": "here",
+      "language": "Langue",
+      "or": "or",
+      "searchLabel": "Search...",
+      "name": "Name",
+      "email": "Email"
+    },
+    "seller": {
+      "product": {
+        "variationsTitle": "Product varieties",
+        "noVariations": "No varieties for this product",
+        "addVariation": "Add varietie",
+        "productNameLabel": "Product name",
+        "productPriceLabel": "Product price"
+      },
+      "helperMessages": {
+        "currency": "Prices for the other currencies are calculated automatically.\nSet your exchange rates"
+      }
     }
+  }
 }

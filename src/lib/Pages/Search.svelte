@@ -1,7 +1,9 @@
 <script>
-    import { location } from "../Stores/location";
-    $:search = new URLSearchParams($location.search).get("q");
+  import { getContext } from "svelte";
+  const location = getContext("location");
+  $: search = new URLSearchParams($location.search).get("q");
 </script>
+
 <div>
-    {search}
+  {search}
 </div>
