@@ -9,14 +9,8 @@
 
   import { user } from "./lib/Stores/user";
   import { currency } from "./lib/Stores/currency";
-  import { t, lang, updateTranslation } from "./lib/Stores/lang";
-  import {
-    location,
-    goTo,
-    routed,
-    popState,
-    replaceState,
-  } from "./lib/Stores/location";
+  import { newLangContext } from "./lib/Stores/lang";
+  import { newLocationContext } from "./lib/Stores/location";
 
   import Footer from "./lib/Components/Footer.svelte";
   import SellerDashboard from "./lib/Pages/Seller/SellerDashboard.svelte";
@@ -27,8 +21,13 @@
   import Test from "./lib/Pages/Test.svelte";
 
   import { setContext } from "svelte";
-  import { theme } from "./lib/Stores/theme";
+  import { newThemeContext } from "./lib/Stores/theme";
   import { cart } from "./lib/Stores/cart";
+
+  const { theme } = newThemeContext();
+  const { t, lang, updateTranslation } = newLangContext();
+  const { location, goTo, routed, popState, replaceState } =
+    newLocationContext();
 
   setContext("user", user);
   setContext("currency", currency);

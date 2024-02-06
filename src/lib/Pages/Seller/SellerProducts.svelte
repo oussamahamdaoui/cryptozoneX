@@ -36,12 +36,19 @@
     properties[language].variations.push({
       id: getUid(),
       type: "Color",
+      closed: false,
     });
     properties = properties;
   };
 
-  const updateVariation = (i) => () => {
-    properties[language].variations[i] = properties[language].variations[i];
+  const updateVariation = () => {
+    properties[language].variations = properties[language].variations;
+  };
+
+  const removeVariation = (id) => () => {
+    properties[language].variations = properties[language].variations.filter(
+      (e) => e.id !== id
+    );
   };
 
   $: {
@@ -77,8 +84,10 @@
         <ToolTip timoutHide={500}>
           <i class="ri-information-line" />
           <slot slot="content">
-            {$t("seller.helperMessages.currency")}
-            <Link href="/exchange-rates">here</Link>
+            <p>
+              {$t("seller.helperMessages.currency")}
+              <Link href="/exchange-rates">{$t("globals.linkHere")}</Link>
+            </p>
           </slot>
         </ToolTip>
       </div>
@@ -113,15 +122,33 @@
       </MultiSelect>
       <h3>{$t("seller.product.variationsTitle")}</h3>
       <div class="props-list">
-        <Drag let:swap onSwap={swapVariants}
-          >{#each properties[language].variations as prop, i (prop.id)}
+        <Drag let:swap onSwap={swapVariants}>
+          {#each properties[language].variations as prop (prop.id)}
             <Draggable {swap} let:dragger let:moving>
-              {prop.id}
-              <button use:dragger class:moving>+</button>
-              <Params {prop} update={updateVariation(i)} />
+              <div class="top">
+                <button use:dragger class:moving class="dragger">
+                  <i class="ri-draggable" />
+                </button>
+                <button
+                  class="close"
+                  on:click={() => (prop.closed = !prop.closed)}
+                >
+                  <i
+                    class={!prop.closed
+                      ? "ri-contract-up-down-fill"
+                      : "ri-expand-up-down-fill"}
+                  />
+                </button>
+                <button class="remove" on:click={removeVariation(prop.id)}>
+                  <i class="ri-close-line" />
+                </button>
+              </div>
+              <div class="content" class:closed={prop.closed}>
+                <Params {prop} update={updateVariation} />
+              </div>
             </Draggable>
-          {/each}</Drag
-        >
+          {/each}
+        </Drag>
         {#if properties[language].variations.length === 0}
           <div class="emptyProps">{$t("seller.product.noVariations")}</div>
         {/if}
@@ -193,6 +220,52 @@
       :global(.tool-tip-content a) {
         color: var(--primary-10);
         text-decoration: underline;
+      }
+    }
+
+    .content {
+      display: contents;
+      &.closed {
+        display: none;
+      }
+    }
+
+    .top {
+      display: flex;
+      overflow: hidden;
+      background-color: var(--neutral-2);
+      border: 1px solid var(--neutral-7);
+      border-radius: 3px 3px 0px 0px;
+      margin-top: 1rem;
+      button {
+        user-select: none;
+        touch-action: none;
+        background-color: transparent;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+        &.moving {
+          cursor: grabbing !important;
+        }
+        &.dragger {
+          cursor: grab;
+        }
+        &.remove {
+          color: var(--red-9);
+          &:hover {
+            color: var(--red-10);
+            background-color: var(--red-a3);
+          }
+        }
+        &:hover {
+          background-color: var(--neutral-3);
+        }
+        &.close {
+          i {
+            transform: rotate(-45deg);
+            display: block;
+          }
+        }
       }
     }
 

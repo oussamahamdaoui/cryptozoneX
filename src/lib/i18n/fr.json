@@ -109,6 +109,7 @@
       "helperMessages": {
         "currency": "Les prix des autres devises sont calculés automatiquement.\nDéfinissez vos taux de change"
       }
-    }
+    },
+    "products": {}
   }
 }

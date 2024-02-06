@@ -1,25 +1,40 @@
 import { writable } from "svelte/store";
 
-export const goTo = (href, state)=>{
-    history.pushState(state, "", href);
+export const newLocationContext = (win = window) => {
+  const goTo = (href, state) => {
+    if (win.parent === win) {
+      history.pushState(state, "", href);
+    }
     const event = new Event("popstate");
-    window.dispatchEvent(event);
-    location.set(document.location);
-}
+    win.dispatchEvent(event);
+    location.set(new URL(document.location.href));
+  };
 
-export const replaceState = (href, state)=>{
-    history.replaceState(state, "", href);
-    location.set(document.location);
-}
+  const replaceState = (href, state) => {
+    if (win.parent === win) {
+      history.replaceState(state, "", href);
+      location.set(new URL(document.location.href));
+    }
+  };
 
-export const popState=()=>{
-    history.back();
-}
+  const popState = () => {
+    if (win.parent === win) {
+      history.back();
+    }
+  };
 
-window.addEventListener("popstate", ()=>{
+  win.addEventListener("popstate", () => {
     routed.set(false);
-    location.set(document.location);
-})
+    // location.set(new URL(document.location.href));
+  });
 
-export const location = writable(document.location);
-export const routed   = writable(false);
+  const location = writable(new URL(document.location.href));
+  const routed = writable(false);
+  return {
+    location,
+    routed,
+    popState,
+    replaceState,
+    goTo,
+  };
+};

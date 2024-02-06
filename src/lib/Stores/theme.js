@@ -1,7 +1,10 @@
 import { writable } from "svelte/store";
 
-export const theme = writable("dark");
+export const newThemeContext = (doc = document) => {
+  const theme = writable("dark");
 
-theme.subscribe(v=>{
-    document.documentElement.classList.value = v;
-})
+  theme.subscribe((v) => {
+    doc.documentElement.classList.value = v;
+  });
+  return { theme };
+};

@@ -1,13 +1,45 @@
 <script>
   import "../../app.scss";
   import "remixicon/fonts/remixicon.css";
-  import { getContext, onMount } from "svelte";
+  import { getContext, onMount, setContext } from "svelte";
   import TopMenu from "./TopMenu.svelte";
-  const updateTranslation = getContext("updateTranslation");
-  const t = getContext("t");
+  import { newLangContext } from "../Stores/lang";
+  import { newThemeContext } from "../Stores/theme";
+  import { newLocationContext } from "../Stores/location";
 
   export let sections;
   export let params;
+  export let doc = document;
+
+  const user = getContext("user");
+  const currency = getContext("currency");
+  const cart = getContext("cart");
+
+  // setContext("user", $user);
+  // setContext("currency", $currency);
+  const { theme } = newThemeContext(doc);
+  setContext("theme", theme);
+  // setContext("cart", $cart);
+  const { t, lang, updateTranslation } = newLangContext();
+  setContext("t", t);
+  setContext("lang", lang);
+  setContext("updateTranslation", updateTranslation);
+
+  const { location, goTo, routed, popState, replaceState } = newLocationContext(
+    doc.defaultView
+  );
+  setContext("location", location);
+  setContext("goTo", goTo);
+  setContext("routed", routed);
+  setContext("replaceState", replaceState);
+  setContext("popState", popState);
+
+  // setContext("location", location);
+  // setContext("goTo", goTo);
+  // setContext("routed", $routed);
+  // setContext("replaceState", replaceState);
+  // setContext("popState", popState);
+
   onMount(() => {
     updateTranslation(params, t);
   });

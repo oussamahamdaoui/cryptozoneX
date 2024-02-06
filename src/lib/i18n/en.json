@@ -99,6 +99,7 @@
       "helperMessages": {
         "currency": "Prices for the other currencies are calculated automatically.\nSet your exchange rates"
       }
-    }
+    },
+    "products": {}
   }
 }

@@ -163,7 +163,7 @@
     position: relative;
 
     .selected-color {
-      width: 90px;
+      width: 52px;
       height: 52px;
       border: 1px solid var(--neutral-8);
       padding: 0.5rem;
