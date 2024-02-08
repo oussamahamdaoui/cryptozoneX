@@ -1,23 +1,11 @@
 <script>
   import { getContext } from "svelte";
+  import { SUPORTED_CURRENCIES } from "../Stores/currency";
+  const currencies = SUPORTED_CURRENCIES;
   const currencySymbol = getContext("currency");
   export let price = 31089n;
   export let useComa = false;
   export let lineTrough = false;
-  const currencies = {
-    USD: {
-      decimalPlace: 100n,
-      symbolPos: "left",
-      symbol: "$",
-      decimal: ".",
-    },
-    EUR: {
-      decimalPlace: 100n,
-      symbolPos: "right",
-      symbol: "€",
-      decimal: ",",
-    },
-  };
   $: currency = currencies[$currencySymbol];
 </script>
 

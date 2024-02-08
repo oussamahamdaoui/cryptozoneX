@@ -47,7 +47,7 @@
     },
     "language": {
       "fr": "Francais",
-      "en": "Anglais"
+      "en": "English"
     },
     "date": {
       "weekDays": {
@@ -96,7 +96,8 @@
       "or": "ou",
       "searchLabel": "Rechercher...",
       "name": "Nom",
-      "email": "Email"
+      "email": "Email",
+      "shopNow": "Boutique"
     },
     "seller": {
       "product": {
@@ -104,7 +105,9 @@
         "noVariations": "Ce produit n'as pas de variétés",
         "addVariation": "Ajouter une variété",
         "productNameLabel": "Nom du produit",
-        "productPriceLabel": "Prix du produit"
+        "productPriceLabel": "Prix du produit",
+        "category": "Categories du produit",
+        "selectCategory": "Sélectionnez les categories"
       },
       "helperMessages": {
         "currency": "Les prix des autres devises sont calculés automatiquement.\nDéfinissez vos taux de change"

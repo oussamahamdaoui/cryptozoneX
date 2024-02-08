@@ -17,18 +17,17 @@ export function checkMissingTranslations() {
    * @returns
    */
   async function templateTranslates({ content, filename }) {
-    if (!languages) {
-      const inDir = join(process.cwd(), "src", "lib", "i18n");
-      languages = (
-        await Promise.all(
-          (await readdir(inDir)).map((fp) => readFile(join(inDir, fp), "utf-8"))
-        )
+    const inDir = join(process.cwd(), "src", "lib", "i18n");
+    languages = (
+      await Promise.all(
+        (await readdir(inDir)).map((fp) => readFile(join(inDir, fp), "utf-8"))
       )
-        .map((e) => JSON.parse(e))
-        .reduce((acc, c) => {
-          return { ...acc, ...c };
-        }, {});
-    }
+    )
+      .map((e) => JSON.parse(e))
+      .reduce((acc, c) => {
+        return { ...acc, ...c };
+      }, {});
+
     const reg = /\$t\([`'"](.+)[`'"]\)/g;
     const keys = [...content.matchAll(reg)];
     const warnings = [];

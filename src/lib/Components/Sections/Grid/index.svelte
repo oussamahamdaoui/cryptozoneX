@@ -1,5 +1,6 @@
 <script>
   import { getContext } from "svelte";
+  import Link from "../../Routing/Link.svelte";
   const t = getContext("t");
   export let id;
 </script>
@@ -10,10 +11,10 @@
       <h2>{$t(`${id}.title`)}</h2>
       <div class="categories">
         {#each $t(`${id}.filterBy`).slice(0, 2) as category}
-          <a class="thiker" href="/">{category}</a>
+          <Link class="thiker" href="/">{category}</Link>
         {/each}
         {#if $t(`${id}.filterBy`).slice(2).length > 0}
-          <a class="thiker" href="/">See All</a>
+          <Link class="thiker" href="/">See All</Link>
         {/if}
       </div>
     </div>

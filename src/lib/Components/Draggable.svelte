@@ -1,122 +1,121 @@
 <script>
-    /**
-     * @param {"up"|"down"} dir
-     * @param {HTMLElement} e
-     */
-    export let swap;
-    let top = 0;
-    /**
-     * @type {HTMLElement}
-     */
-    let element;
-    let moving = false;
-    let previousTouch;
-    let topH;
-    let bottomH;
+  /**
+   * @param {"up"|"down"} dir
+   * @param {HTMLElement} e
+   */
+  export let swap;
+  let top = 0;
+  /**
+   * @type {HTMLElement}
+   */
+  let element;
+  let moving = false;
+  let previousTouch;
+  let topH;
+  let bottomH;
 
-    const updateLimits = () => {
-        if (element.previousElementSibling) {
-            topH =
-                element.previousElementSibling.getBoundingClientRect().height;
+  const updateLimits = () => {
+    if (element.previousElementSibling) {
+      topH = element.previousElementSibling.getBoundingClientRect().height;
+    } else {
+      topH = null;
+    }
+    if (element.nextElementSibling) {
+      bottomH = element.nextElementSibling.getBoundingClientRect().height;
+    } else {
+      bottomH = null;
+    }
+  };
+  function onMouseDown(e) {
+    moving = true;
+    if (e?.touches?.[0]) {
+      const touch = e.touches[0];
+      previousTouch = touch;
+    }
+    updateLimits();
+  }
+
+  const onMouseMove = async (e) => {
+    if (moving) {
+      const dir = Math.sign(top + e.movementY);
+      if (dir > 0 && bottomH === null) {
+        top = 0;
+        return;
+      }
+      if (dir < 0 && topH === null) {
+        top = 0;
+        return;
+      }
+      top += e.movementY;
+      const limit = dir <= 0 ? topH : bottomH;
+      if (limit && Math.abs(top) > limit) {
+        let swaped;
+        if (top > 0) {
+          swaped = await swap("down", element);
         } else {
-            topH = null;
+          swaped = await swap("up", element);
         }
-        if (element.nextElementSibling) {
-            bottomH = element.nextElementSibling.getBoundingClientRect().height;
+        if (!swaped) {
+          moving = false;
         } else {
-            bottomH = null;
+          top = 0;
+          updateLimits();
         }
+      }
+    }
+  };
+
+  function touchMove(e) {
+    const touch = e?.touches[0];
+    if (previousTouch) {
+      e.movementX = touch.pageX - previousTouch.pageX;
+      e.movementY = touch.pageY - previousTouch.pageY;
+      onMouseMove(e);
+    }
+
+    previousTouch = touch;
+  }
+
+  function onMouseUp() {
+    if (moving) {
+      moving = false;
+      previousTouch = null;
+      top = 0;
+    }
+  }
+  /**
+   *
+   * @param {HTMLElement} node
+   */
+  function dragger(node) {
+    node.addEventListener("touchstart", onMouseDown, { passive: true });
+    node.addEventListener("mousedown", onMouseDown, { passive: true });
+
+    return {
+      destroy: () => {
+        node.removeEventListener("mousedown", onMouseDown);
+        node.removeEventListener("touchstart", onMouseDown);
+      },
     };
-    function onMouseDown(e) {
-        moving = true;
-        if (e?.touches?.[0]) {
-            const touch = e.touches[0];
-            previousTouch = touch;
-        }
-        updateLimits();
-    }
-
-    const onMouseMove = async (e) => {
-        if (moving) {
-            const dir = Math.sign(top + e.movementY);
-            if (dir > 0 && bottomH === null) {
-                top = 0;
-                return;
-            }
-            if (dir < 0 && topH === null) {
-                top = 0;
-                return;
-            }
-            top += e.movementY;
-            const limit = dir <= 0 ? topH : bottomH;
-            if (limit && Math.abs(top) > limit) {
-                let swaped;
-                if (top > 0) {
-                    swaped = await swap("down", element);
-                } else {
-                    swaped = await swap("up", element);
-                }
-                if (!swaped) {
-                    moving = false;
-                } else {
-                    top = 0;
-                    updateLimits();
-                }
-            }
-        }
-    };
-
-    function touchMove(e) {
-        const touch = e?.touches[0];
-        if (previousTouch) {
-            e.movementX = touch.pageX - previousTouch.pageX;
-            e.movementY = touch.pageY - previousTouch.pageY;
-            onMouseMove(e);
-        }
-
-        previousTouch = touch;
-    }
-
-    function onMouseUp() {
-        if (moving) {
-            moving = false;
-            previousTouch = null;
-            top = 0;
-        }
-    }
-    /**
-     *
-     * @param {HTMLElement} node
-     */
-    function dragger(node) {
-        node.addEventListener("touchstart", onMouseDown);
-        node.addEventListener("mousedown", onMouseDown);
-
-        return {
-            destroy: () => {
-                node.removeEventListener("mousedown", onMouseDown);
-                node.removeEventListener("touchstart", onMouseDown);
-            },
-        };
-    }
+  }
 </script>
 
 <div class="draggable" class:moving bind:this={element} style="top: {top}px;">
-    <slot {dragger} {moving} />
+  <slot {dragger} {moving} />
 </div>
 
 <svelte:window
-    on:mouseup={onMouseUp}
-    on:mousemove={onMouseMove}
-    on:touchmove={touchMove}
-    on:touchend={onMouseUp}
+  on:mouseup={onMouseUp}
+  on:mousemove={onMouseMove}
+  on:touchmove={touchMove}
+  on:touchend={onMouseUp}
 />
 
 <style lang="scss">
-    .draggable {
-        position: relative;
-        &.moving {
-            z-index: 99;
-        }
+  .draggable {
+    position: relative;
+    &.moving {
+      z-index: 99;
     }
+  }
 </style>

@@ -2,13 +2,13 @@
   import Accordion from "./Accordion.svelte";
   import AccordionSection from "./AccordionSection.svelte";
   import Price from "./Price.svelte";
+  import HelperText from "./ProductProps/HelperText.svelte";
   import Rateing from "./Rating.svelte";
   import SizeSelector from "./SizeSelector.svelte";
   import { getContext } from "svelte";
   /*** @type {string}*/
   export let id = undefined;
-  /*** @type {string}*/
-  export let locale = undefined;
+
   let loading = false;
   const t = getContext("t");
   $: {
@@ -18,6 +18,9 @@
       loading = false;
     }, 200);
   }
+  const formatCurrency = (v) => {
+    return BigInt(v.reduce(".", ""));
+  };
 </script>
 
 <div class="product-preview">
@@ -48,13 +51,13 @@
       <i class="ri-loader-3-line" />
     </div>
     <h1>{$t(`products.${id}.productName`)}</h1>
+    <h2 class="price">
+      <span class="promo">-50%</span>
+      <Price price={BigInt($t(`products.${id}.productPrice`) || 0)} />
+    </h2>
     <h5>Seller: <a href="/">05RFC1230</a></h5>
     <Rateing value={1.6} disabled />
     <div class="line" />
-    <h2 class="price">
-      <span class="promo">-50%</span>
-      <Price />
-    </h2>
     <!-- <h4 class="old-price">
             Old Price: <Price lineTrough />
         </h4> -->
@@ -63,6 +66,7 @@
         {#if variation.name}
           <h3>{variation.name}</h3>
         {/if}
+        <HelperText props={variation}></HelperText>
         {#await import(`./ProductProps/${variation.type}/index.svelte`) then p}
           <svelte:component this={p.default} {...variation.props} />
         {/await}
@@ -197,6 +201,9 @@
     .info {
       flex: 4;
       position: relative;
+      gap: 0.5rem;
+      display: flex;
+      flex-direction: column;
       .buttons {
         margin-top: 3rem;
         margin-bottom: 3rem;

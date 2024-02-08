@@ -25,7 +25,7 @@ export const newLocationContext = (win = window) => {
 
   win.addEventListener("popstate", () => {
     routed.set(false);
-    // location.set(new URL(document.location.href));
+    location.set(new URL(document.location.href));
   });
 
   const location = writable(new URL(document.location.href));

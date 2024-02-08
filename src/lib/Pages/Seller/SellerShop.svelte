@@ -214,6 +214,7 @@
     display: flex;
     align-items: flex-start;
     flex: 1;
+    max-width: 100vw;
     .wrap {
       display: flex;
       align-items: center;
@@ -246,7 +247,7 @@
     }
     .body {
       padding-left: 1rem;
-      padding-right: 2rem;
+      padding-right: 1rem;
       display: flex;
       align-items: flex-start;
       gap: 1rem;
@@ -373,6 +374,7 @@
         width: 70px;
         .editor {
           width: 100%;
+          max-width: 100vw;
         }
         .parameters {
           width: 100%;

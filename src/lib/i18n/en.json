@@ -13,7 +13,7 @@
       "continueWith": "Continue with"
     },
     "language": {
-      "fr": "French",
+      "fr": "Francais",
       "en": "English"
     },
     "categories": {
@@ -86,7 +86,8 @@
       "or": "or",
       "searchLabel": "Search...",
       "name": "Name",
-      "email": "Email"
+      "email": "Email",
+      "shopNow": "Shop now"
     },
     "seller": {
       "product": {
@@ -94,7 +95,9 @@
         "noVariations": "No varieties for this product",
         "addVariation": "Add varietie",
         "productNameLabel": "Product name",
-        "productPriceLabel": "Product price"
+        "productPriceLabel": "Product price",
+        "category": "Product Categories",
+        "selectCategory": "Select categories"
       },
       "helperMessages": {
         "currency": "Prices for the other currencies are calculated automatically.\nSet your exchange rates"

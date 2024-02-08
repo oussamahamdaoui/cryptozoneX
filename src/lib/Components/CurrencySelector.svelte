@@ -3,7 +3,7 @@
   const currency = getContext("currency");
   import { cls } from "../utils";
   import DropDown from "./DropDown.svelte";
-  let value = "EUR";
+  export let value = "EUR";
   export let global = true;
   $: global && currency.set(value);
 </script>

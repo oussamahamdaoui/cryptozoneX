@@ -78,17 +78,17 @@
   @use "/src/globals.scss";
   .tool-tip {
     display: contents;
-    z-index: 100;
     cursor: pointer;
   }
 
   .tool-tip-content {
     color: var(--neutral-11) !important;
+    position: fixed;
     &.bottom-right {
       transform: translate(0%, 60%);
     }
     &.bottom-left {
-      transform: translate(-100%, 60%);
+      transform: translate(-100%, 20%);
     }
     &.bottom-center {
       transform: translate(-50%, 60%);

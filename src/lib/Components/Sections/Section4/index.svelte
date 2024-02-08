@@ -10,9 +10,7 @@
   </div>
   <div class="row">
     <h1 class="fst">
-      {#each $t("homePage.title").split("\n") as tp}
-        {tp}<br />
-      {/each}
+      {$t("homePage.title")}
     </h1>
     <div class="snd">
       <p>

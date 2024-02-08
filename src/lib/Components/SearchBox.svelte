@@ -93,7 +93,7 @@
   .search-box {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    flex: 1;
     :global(.drop-down) {
       background-color: var(--primary-5);
       height: 100%;

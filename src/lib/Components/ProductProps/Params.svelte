@@ -18,8 +18,6 @@
       prevPorp = copy(prop);
     }
   }
-
-  let withHelper = false;
 </script>
 
 <div class="variation-params">
@@ -43,14 +41,14 @@
   {/await}
   <!-- svelte-ignore a11y-label-has-associated-control -->
   <label>
-    <CheckBox bind:checked={withHelper} />
+    <CheckBox bind:checked={prop.withHelper} />
     Add helper text
   </label>
-  {#if withHelper}
-    <Input>
+  {#if prop.withHelper}
+    <Input bind:value={prop.helperTitle}>
       <slot slot="label">Title</slot>
     </Input>
-    <Input type="textarea">
+    <Input bind:value={prop.helperText} type="textarea">
       <slot slot="label">Text</slot>
     </Input>
   {/if}
@@ -67,6 +65,7 @@
     flex-direction: column;
     gap: 1em;
     border-radius: 0px 0px 3px 3px;
+    margin-bottom: 1rem;
     label {
       width: max-content;
       cursor: pointer;

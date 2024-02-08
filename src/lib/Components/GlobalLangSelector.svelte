@@ -18,7 +18,7 @@
   <slot slot="options" let:change>
     {#each SUPPORTED_LANGS as lan}
       <button on:click={change(lan)}>
-        {$t(`language.${lan}`, { locale: lan })}
+        {$t(`language.${lan}`)}
       </button>
     {/each}
   </slot>

@@ -173,21 +173,41 @@ export const copy = (obj) => {
 };
 
 /**
- * @type {{(text:string, font:string):number, canvas?:HTMLDivElement}}
+ *
+ * @param {boolean} multi
+ * @param {string} accept
+ * @returns {Promise<File[]>}
  */
-
-export const getTextWidth = (text, font) => {
-  const canvas = getTextWidth.canvas || document.createElement("div");
-  if (document.body.contains(canvas)) {
-    canvas.style.whiteSpace = "pre";
-    canvas.style.width = "max-content";
-    canvas.style.fontSize = font;
-    canvas.style.opacity = "0";
-    canvas.style.pointerEvents = "none";
-    canvas.style.position = "fixed";
-    document.body.appendChild(canvas);
-  }
-
-  canvas.innerText = text;
-  return canvas.getBoundingClientRect().width + 5;
+export const upload = (multi = false, accept = "image/*") => {
+  return new Promise((resolve) => {
+    const file = document.createElement("input");
+    file.type = "file";
+    file.setAttribute("style", `opacity:0;position:fixed;top:0;left:0;`);
+    file.setAttribute("accept", accept);
+    if (multi) {
+      file.setAttribute("multiple", "true");
+    }
+    file.click();
+    file.onchange = () => {
+      resolve([...file.files]);
+      file.remove();
+    };
+  });
 };
+
+/** Dispatch event on click outside of node */
+export function clickOutside(node) {
+  const handleClick = (event) => {
+    if (node && !node.contains(event.target) && !event.defaultPrevented) {
+      node.dispatchEvent(new CustomEvent("click-outside", node));
+    }
+  };
+
+  document.addEventListener("click", handleClick, true);
+
+  return {
+    destroy() {
+      document.removeEventListener("click", handleClick, true);
+    },
+  };
+}

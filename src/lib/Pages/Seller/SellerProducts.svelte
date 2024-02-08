@@ -13,6 +13,7 @@
   import CurrencySelector from "../../Components/CurrencySelector.svelte";
   import Link from "../../Components/Routing/Link.svelte";
   import { getContext } from "svelte";
+  import { SUPORTED_CURRENCIES } from "../../Stores/currency";
 
   const updateTranslation = getContext("updateTranslation");
   const t = getContext("t");
@@ -20,6 +21,8 @@
   let categories = c.filter((c) => c !== "all");
   let properties = {};
   let language;
+  const intitialCurrency = getContext("currency");
+  let selectedCurrency = $intitialCurrency;
 
   $: properties[language] = properties[language] ?? {
     productName: "",
@@ -37,6 +40,9 @@
       id: getUid(),
       type: "Color",
       closed: false,
+      helperTitle: "",
+      helperText: "",
+      withHelper: false,
     });
     properties = properties;
   };
@@ -71,14 +77,18 @@
   <div class="content">
     <div class="params">
       <LanguageSelector bind:value={language} />
-      <Input bind:value={properties[language].productName}>
+      <Input bind:value={properties[language].productName} type="textarea">
         <slot slot="label">{$t("seller.product.productNameLabel")}</slot>
       </Input>
       <div class="wrap">
-        <Input bind:value={properties[language].productPrice}>
+        <Input
+          bind:value={properties[language].productPrice}
+          type="price"
+          digits={SUPORTED_CURRENCIES[selectedCurrency].decimalPlace}
+        >
           <slot slot="label">{$t("seller.product.productPriceLabel")}</slot>
         </Input>
-        <CurrencySelector global={false}>
+        <CurrencySelector global={false} bind:value={selectedCurrency}>
           <slot slot="label">{$t("globals.currency")}</slot>
         </CurrencySelector>
         <ToolTip timoutHide={500}>
@@ -91,7 +101,7 @@
           </slot>
         </ToolTip>
       </div>
-      <MultiSelect placeholder="Select categories" max={10}>
+      <MultiSelect placeholder={$t("seller.product.selectCategory")} max={10}>
         <slot slot="selected" let:selected let:toggle>
           {#each selected as categorie}
             <button on:mousedown={toggle(categorie)}>
@@ -100,7 +110,7 @@
             </button>
           {/each}
         </slot>
-        <slot slot="label">Product Categories</slot>
+        <slot slot="label">{$t("seller.product.category")}</slot>
         <slot slot="options" let:toggle let:selected let:search>
           {#each categories as categorie}
             {#if $t(`categories.${categorie}`)
@@ -142,6 +152,7 @@
                 <button class="remove" on:click={removeVariation(prop.id)}>
                   <i class="ri-close-line" />
                 </button>
+                <div class="type">{prop.name || prop.type}</div>
               </div>
               <div class="content" class:closed={prop.closed}>
                 <Params {prop} update={updateVariation} />
@@ -162,7 +173,7 @@
       </div>
     </div>
     <div class="preview">
-      <ProductPreview id="preview" locale={language} />
+      <ProductPreview id="preview" />
     </div>
   </div>
 </div>
@@ -173,17 +184,19 @@
     align-items: flex-start;
     flex: 1;
     width: 100%;
-    .content {
-      flex: 1;
-      display: flex;
-    }
+
     .params {
       display: flex;
       flex-direction: column;
       gap: 1rem;
       flex: 2;
-      padding: 0.5rem;
-      min-width: 0;
+      padding: 1rem;
+      overflow-y: auto;
+      max-height: 100vh;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      z-index: 2;
       .props-list {
         display: flex;
         flex-direction: column;
@@ -223,6 +236,13 @@
       }
     }
 
+    .line {
+      width: 1px;
+      align-self: stretch;
+      background-color: var(--neutral-7);
+      margin-left: -1px;
+    }
+
     .content {
       display: contents;
       &.closed {
@@ -236,7 +256,8 @@
       background-color: var(--neutral-2);
       border: 1px solid var(--neutral-7);
       border-radius: 3px 3px 0px 0px;
-      margin-top: 1rem;
+      align-items: center;
+      position: relative;
       button {
         user-select: none;
         touch-action: none;
@@ -267,10 +288,20 @@
           }
         }
       }
+      .type {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+        font-size: smaller;
+      }
     }
 
     .preview {
-      flex: 5;
+      flex: 6;
+      border-left: 1px solid var(--neutral-7);
     }
   }
 </style>
