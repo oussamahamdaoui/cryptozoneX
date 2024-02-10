@@ -115,6 +115,9 @@
       color: var(--neutral-12);
       flex: 1;
       width: 100%;
+      ::placeholder {
+        color: red;
+      }
     }
     textarea {
       font-size: 1rem;

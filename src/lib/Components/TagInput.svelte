@@ -1,5 +1,9 @@
 <script>
   export let label = "";
+  export let placeholder = "";
+  export { value };
+  export let disabled = false;
+
   let val = "";
   /**
    * @type {HTMLElement}
@@ -27,6 +31,7 @@
   ];
   $: value && updateTags();
   $: tags && updateValue();
+  $: showPlaceholder = tags.length <= 1 && placeholder !== "" && val === "";
 
   const updateValue = () => {
     value = tags
@@ -35,21 +40,36 @@
   };
   const updateTags = () => {
     tags = [
-      ...value.map((e) => ({ type: /**@type {const}**/ ("tag"), value: e })),
+      ...[...new Set(value)].map((e) => ({
+        type: /**@type {const}**/ ("tag"),
+        value: e,
+      })),
       { type: "input" },
     ];
   };
-  export { value };
   const updateSize = () => {
     sizer.innerText = val;
     w = sizer.getBoundingClientRect().width;
   };
   const focusInput = (pos) => {
     setTimeout(() => {
+      if (!ipt) return;
       ipt.focus();
       ipt.selectionStart = pos;
       ipt.selectionEnd = pos;
     }, 0);
+  };
+  /**
+   * @param {Element} i
+   */
+  const animate = (i) => {
+    if (i.nodeName === "INPUT") return;
+    i.classList.add("shake");
+    setTimeout(() => {
+      if (i) {
+        i.classList.remove("shake");
+      }
+    }, 300);
   };
 
   /**
@@ -58,6 +78,7 @@
    */
   const handleSpecialKeys = (e) => {
     const cursorPos = tags.findIndex((e) => e.type === "input");
+    const found = tags.findIndex((e) => "value" in e && e.value === val);
     let pos = 0;
     if (e.key === "ArrowLeft" && ipt.selectionStart === 0) {
       if (val.length === 0 && tags[cursorPos - 1]) {
@@ -70,24 +91,36 @@
       } else if (tags[cursorPos - 1]) {
         // @ts-ignore
         const v = tags[cursorPos - 1].value;
-        tags.splice(
-          cursorPos,
-          1,
-          { type: "input" },
-          { type: "tag", value: val }
-        );
-        tags = tags;
-        val = "";
-        pos = v.length;
+        if (found === -1) {
+          tags.splice(
+            cursorPos,
+            1,
+            { type: "input" },
+            { type: "tag", value: val }
+          );
+          tags = tags;
+          val = "";
+          pos = v.length;
+        } else {
+          animate(ctnr.children[found]);
+          tags.splice(cursorPos - 1, 2, { type: "input" });
+          tags = tags;
+          val = v;
+          pos = v.length;
+        }
       } else if (val.length !== 0) {
-        tags.splice(
-          cursorPos,
-          1,
-          { type: "input" },
-          { type: "tag", value: val }
-        );
-        tags = tags;
-        val = "";
+        if (found === -1) {
+          tags.splice(
+            cursorPos,
+            1,
+            { type: "input" },
+            { type: "tag", value: val }
+          );
+          tags = tags;
+          val = "";
+        } else {
+          animate(ctnr.children[found]);
+        }
       }
       updateSize();
       focusInput(pos);
@@ -101,31 +134,54 @@
         val = v;
         pos = 0;
       } else if (tags[cursorPos + 1]) {
-        // @ts-ignore
-        tags.splice(
-          cursorPos,
-          1,
-          { type: "tag", value: val },
-          { type: "input" }
-        );
-        tags = tags;
-        val = "";
-        pos = 0;
+        if (found === -1) {
+          tags.splice(
+            cursorPos,
+            1,
+            { type: "tag", value: val },
+            { type: "input" }
+          );
+          tags = tags;
+          val = "";
+          pos = 0;
+        } else {
+          animate(ctnr.children[found]);
+          // @ts-ignore
+          const v = tags[cursorPos + 1].value;
+          tags.splice(cursorPos, 2, { type: "input" });
+          tags = tags;
+          val = v;
+          pos = 0;
+        }
       } else if (val.length !== 0) {
-        tags.splice(
-          cursorPos,
-          1,
-          { type: "tag", value: val },
-          { type: "input" }
-        );
-        tags = tags;
-        val = "";
+        if (found === -1) {
+          tags.splice(
+            cursorPos,
+            1,
+            { type: "tag", value: val },
+            { type: "input" }
+          );
+          tags = tags;
+          val = "";
+        } else {
+          animate(ctnr.children[found]);
+          pos = val.length;
+        }
       }
       updateSize();
       focusInput(pos);
     }
     if (e.key === "Enter" && val.length !== 0) {
-      tags.splice(cursorPos, 1, { type: "tag", value: val }, { type: "input" });
+      if (found === -1) {
+        tags.splice(
+          cursorPos,
+          1,
+          { type: "tag", value: val },
+          { type: "input" }
+        );
+      } else {
+        animate(ctnr.children[found]);
+      }
       tags = tags;
       val = "";
       pos = 0;
@@ -239,9 +295,14 @@
 
   const blur = () => {
     setTimeout(() => {
+      if (!ctnr) return;
       if (ctnr.contains(document.activeElement)) return;
+      const found = tags.findIndex((e) => "value" in e && e.value === val);
       const cursorPos = tags.findIndex((e) => e.type === "input");
-      if (val.length === 0) {
+      if (val.length === 0 || found !== -1) {
+        if (val.length !== 0) {
+          animate(ctnr.children[found]);
+        }
         tags.splice(cursorPos, 1);
       } else {
         tags.splice(cursorPos, 1, { type: "tag", value: val });
@@ -252,12 +313,14 @@
       updateSize();
     }, 100);
   };
+  let animation = "";
 </script>
 
-<div class="tag-input">
+<div class="tag-input" class:disabled>
   {#if label !== ""}
     <div class="label">{label}</div>
   {/if}
+  <slot name="iconLeft" />
   <div
     class="container"
     style="--w:{w}px;"
@@ -272,6 +335,11 @@
       focusInput(0);
     }}
   >
+    {#if showPlaceholder}
+      <div class="placeholder">
+        {placeholder}
+      </div>
+    {/if}
     {#each tags as tag}
       {#if tag.type === "input"}
         <div class="input">
@@ -279,6 +347,7 @@
           <input
             bind:value={val}
             bind:this={ipt}
+            {disabled}
             type="text"
             name="none"
             on:input={updateSize}
@@ -291,7 +360,7 @@
         </div>
       {:else}
         <div
-          class="tag"
+          class="tag {animation}"
           on:click={click(tag)}
           role="button"
           tabindex="0"
@@ -306,6 +375,7 @@
       {/if}
     {/each}
   </div>
+  <slot name="iconRight" />
 </div>
 
 <style lang="scss">
@@ -319,6 +389,16 @@
     padding-left: 1rem;
     min-height: 52px;
     position: relative;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    cursor: text;
+
+    &.disabled {
+      opacity: 0.3;
+      cursor: default !important;
+    }
     .label {
       position: absolute;
       font-size: 0.6rem;
@@ -330,6 +410,17 @@
       padding-right: 0.5rem;
       color: var(--neutral-9);
     }
+    .placeholder {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      color: var(--neutral-8);
+    }
   }
   .container {
     min-width: 150px;
@@ -338,9 +429,9 @@
     position: relative;
     font-size: 1rem;
     align-items: center;
-    cursor: text;
     outline: none;
     @include globals.hide-scrollbar;
+    flex: 1;
 
     .input {
       padding: 5px 0;
@@ -388,6 +479,28 @@
         outline: none;
         white-space: pre;
       }
+    }
+  }
+
+  .shake {
+    animation: horizontal-shaking 0.25s infinite;
+  }
+
+  @keyframes horizontal-shaking {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(1px);
+    }
+    50% {
+      transform: translateX(-1px);
+    }
+    75% {
+      transform: translateX(1px);
+    }
+    100% {
+      transform: translateX(0);
     }
   }
 </style>

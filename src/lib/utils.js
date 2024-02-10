@@ -178,7 +178,7 @@ export const copy = (obj) => {
  * @param {string} accept
  * @returns {Promise<File[]>}
  */
-export const upload = (multi = false, accept = "image/*") => {
+export const fileSelector = (multi = false, accept = "image/*") => {
   return new Promise((resolve) => {
     const file = document.createElement("input");
     file.type = "file";

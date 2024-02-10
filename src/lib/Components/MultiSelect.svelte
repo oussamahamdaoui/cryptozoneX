@@ -169,6 +169,7 @@
 
       .placeholder {
         margin-left: 0.5rem;
+        font-size: 1rem;
       }
 
       :global(button) {

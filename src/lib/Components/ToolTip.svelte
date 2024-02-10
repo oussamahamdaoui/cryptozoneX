@@ -114,12 +114,6 @@
     border: 1px solid var(--neutral-7);
     font-size: 12px;
     z-index: 100;
-    div {
-      cursor: pointer;
-      max-width: 200px;
-      width: max-content;
-      // white-space: nowrap;
-    }
     &.visible {
       opacity: 1;
       z-index: 100;

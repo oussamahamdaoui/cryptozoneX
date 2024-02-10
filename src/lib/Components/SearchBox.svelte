@@ -127,6 +127,10 @@
       color: var(--neutral-12);
       height: 45px;
       border-radius: 5px;
+      ::placeholder {
+        color: var(--neutral-8);
+        opacity: 1;
+      }
       &:focus-within {
         border: 1px solid var(--primary-8);
       }
