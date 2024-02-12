@@ -1,9 +1,5 @@
-import ShortUniqueId from "short-unique-id";
-import c from "color";
-
-const uid = new ShortUniqueId({ length: 10 });
 export const getUid = () => {
-  return uid();
+  return crypto.randomUUID();
 };
 
 export const categories = [
@@ -35,87 +31,6 @@ export const categories = [
   "videogames",
   "fashion-womens",
 ];
-
-export class Color {
-  /**
-   * @param {any} colorObj
-   */
-  constructor(colorObj) {
-    if (String(colorObj) === colorObj) {
-      this.color = c(colorObj, "hex");
-    } else if ("r" in colorObj) {
-      this.color = c(colorObj, "rgb");
-    } else {
-      this.color = c(colorObj, "hsl").rgb();
-    }
-  }
-  /**
-   *
-   * @param {number} arg
-   * @returns
-   */
-
-  hue(arg = undefined) {
-    if (arg !== undefined) {
-      return new Color(this.color.hue(arg).rgb());
-    }
-    return this.color.hue();
-  }
-  /**
-   *
-   * @param {number} arg
-   * @returns
-   */
-  white(arg = undefined) {
-    if (arg !== undefined) {
-      return new Color(this.color.white(arg).rgb());
-    }
-    return this.color.white();
-  }
-  /**
-   *
-   * @param {number} arg
-   * @returns
-   */
-  black(arg = undefined) {
-    if (arg !== undefined) {
-      return new Color(this.color.black(arg).rgb());
-    }
-    return this.color.black();
-  }
-  hex() {
-    return this.color.hex();
-  }
-  /**
-   *
-   * @param {{h:number, s:number, l:number}} hsl
-   * @returns {any}
-   */
-  hsl(hsl = undefined) {
-    if (hsl !== undefined) {
-      return new Color(this.color.hsl(hsl.h, hsl.s, hsl.l));
-    }
-    return {
-      h: this.color.hue(),
-      s: this.color.lightness(),
-      l: this.color.luminosity(),
-    };
-  }
-  /**
-   * @param {{r:number, g:number, b:number}} rgb
-   * @returns {any}
-   */
-  rgb(rgb = undefined) {
-    if (rgb !== undefined) {
-      return new Color(this.color.rgb(rgb.r, rgb.g, rgb.b));
-    }
-    return {
-      r: this.color.red(),
-      g: this.color.green(),
-      b: this.color.blue(),
-    };
-  }
-}
 
 /**
  *

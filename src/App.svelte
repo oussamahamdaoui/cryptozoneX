@@ -53,7 +53,7 @@
   const PAGE_404 = /.*/;
   const SELLER_PRODUCTS = "/products";
   const CART = "/cart";
-  const PRODUCT = /\/p\/[a-z-]{1,10}$/;
+  const PRODUCT = /\/p\/[a-z-]{5,10}$/;
 </script>
 
 <main>

@@ -61,10 +61,14 @@
       doc.removeEventListener("focusin", focusOut);
     };
   });
+  const toggleOpen = () => {
+    if (options.children.length === 0) return;
+    isOpen = !isOpen;
+  };
 </script>
 
 <div class="drop-down {cls}" class:open={isOpen} bind:this={el}>
-  <button class="value" on:click={() => (isOpen = !isOpen)} bind:this={oppener}>
+  <button class="value" on:click={toggleOpen} bind:this={oppener}>
     <slot name="value" {value} />
     <i class="ri-arrow-drop-down-line" />
   </button>
@@ -115,6 +119,7 @@
       padding-left: 1rem;
       i {
         font-size: 1.5rem;
+        margin-left: auto;
       }
     }
     :global(.options > button) {

@@ -258,6 +258,11 @@
       </div>
     </div>
   {/each}
+  {#if images.length === 0}
+    <slot name="empty">
+      <p class="empty">There is nothing here</p>
+    </slot>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -271,6 +276,19 @@
     border-radius: 5px;
     padding: 0.5rem;
     position: relative;
+    outline: none;
+
+    .empty {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      color: var(--neutral-6);
+    }
+
     .rect {
       position: absolute;
       left: var(--x);

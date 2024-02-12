@@ -8,7 +8,6 @@
   export let props;
   $: props = props ?? {
     options: [],
-    label: "",
   };
 
   const addOption = () => {
@@ -30,9 +29,6 @@
 </script>
 
 <div class="option">
-  <Input bind:value={props.label}>
-    <slot slot="label">Value label</slot>
-  </Input>
   <Drag let:swap onSwap={swapOption}>
     {#each props.options as option (option.id)}
       <Draggable {swap} let:dragger let:moving>
@@ -40,7 +36,7 @@
           <button use:dragger class:moving>
             <i class="ri-draggable" />
           </button>
-          <Input bind:value={option.label}>
+          <Input bind:value={option.label} type="textarea">
             <slot slot="label">Option label</slot>
           </Input>
           <Input bind:value={option.addPrice} class="price">
@@ -93,6 +89,9 @@
       background-color: transparent;
       border: none;
       color: var(--neutral-9);
+      &:focus {
+        background-color: red;
+      }
       &:first-of-type {
         cursor: grab;
         &.moving {

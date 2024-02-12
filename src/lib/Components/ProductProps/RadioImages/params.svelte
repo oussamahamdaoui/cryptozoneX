@@ -4,6 +4,7 @@
   import Drag from "../../Drag.svelte";
   import Draggable from "../../Draggable.svelte";
   import Input from "../../Input.svelte";
+  import Media from "../../Media.svelte";
   import ToolTip from "../../ToolTip.svelte";
   export let props;
   $: props = props ?? {
@@ -15,6 +16,7 @@
       name: "",
       id: getUid(),
       addPrice: 0,
+      img: "",
     });
     props = props;
   };
@@ -60,6 +62,7 @@
             <i class="ri-close-line" />
           </button>
         </div>
+        <Media></Media>
       </Draggable>
     {/each}</Drag
   >

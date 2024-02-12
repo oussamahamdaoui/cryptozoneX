@@ -64,9 +64,6 @@
     {/if}
     <slot name="iconRight" />
   </div>
-  <div class="error">
-    <slot name="error" />
-  </div>
 </label>
 
 <style lang="scss">
@@ -76,6 +73,7 @@
     flex-direction: column;
     position: relative;
     min-height: 52px;
+    height: max-content;
     justify-content: flex-end;
     border: 1px solid var(--neutral-9);
     border-radius: 3px;
@@ -101,11 +99,11 @@
       display: flex;
       flex: 1;
     }
-    .error {
-      font-size: 0.5rem;
-      padding-left: 2rem;
-      margin-bottom: 0.2rem;
-    }
+    // .error {
+    //   font-size: 0.5rem;
+    //   padding-left: 2rem;
+    //   margin-bottom: 0.2rem;
+    // }
     input {
       border: none;
       background-color: transparent;

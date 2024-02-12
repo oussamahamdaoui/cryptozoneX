@@ -14,6 +14,7 @@
   import Link from "../../Components/Routing/Link.svelte";
   import { getContext } from "svelte";
   import { SUPORTED_CURRENCIES } from "../../Stores/currency";
+  import Media from "../../Components/Media.svelte";
 
   const updateTranslation = getContext("updateTranslation");
   const t = getContext("t");
@@ -76,6 +77,7 @@
   <div class="line" />
   <div class="content">
     <div class="params">
+      <h3>{"General params"}</h3>
       <LanguageSelector bind:value={language} />
       <Input bind:value={properties[language].productName} type="textarea">
         <slot slot="label">{$t("seller.product.productNameLabel")}</slot>
@@ -130,6 +132,8 @@
           {/each}
         </slot>
       </MultiSelect>
+      <h3>{"Product Images"}</h3>
+      <Media limit={5}></Media>
       <h3>{$t("seller.product.variationsTitle")}</h3>
       <div class="props-list">
         <Drag let:swap onSwap={swapVariants}>
@@ -192,7 +196,6 @@
       flex: 2;
       padding: 1rem;
       overflow-y: auto;
-      max-height: 100vh;
       overflow-y: auto;
       position: sticky;
       top: 0;
@@ -300,8 +303,13 @@
     }
 
     .preview {
-      flex: 6;
+      flex: 5;
       border-left: 1px solid var(--neutral-7);
+      align-self: stretch;
+      :global(.product-preview) {
+        position: sticky;
+        top: 0;
+      }
     }
   }
 </style>

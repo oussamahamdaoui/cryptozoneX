@@ -307,7 +307,8 @@
         width: 100%;
         display: flex;
         flex-direction: column;
-        background-color: var(--neutral-2);
+        background-color: var(--neutral-1);
+        --bg: var(--neutral-1);
         border: 1px solid var(--neutral-7);
         border-radius: 5px;
         margin-bottom: 1rem;

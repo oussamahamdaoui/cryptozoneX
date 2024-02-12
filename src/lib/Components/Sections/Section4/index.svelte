@@ -10,7 +10,7 @@
   </div>
   <div class="row">
     <h1 class="fst">
-      {$t("homePage.title")}
+      {"title"}
     </h1>
     <div class="snd">
       <p>
@@ -19,7 +19,7 @@
         voluptatum porro, inventore delectus asperiores consectetur
         reprehenderit omnis accusantium atque itaque autem.
       </p>
-      <button class="button secondary">{$t("homePage.shopNow")}</button>
+      <button class="button secondary">{"button"}</button>
     </div>
   </div>
 </div>

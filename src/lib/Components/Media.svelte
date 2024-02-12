@@ -236,6 +236,8 @@
     height: 360px;
     max-height: 360px;
     width: 100%;
+    position: relative;
+    z-index: 1;
     :global(.head) {
       padding: 0.5rem !important;
       border-bottom: none !important;
@@ -325,6 +327,7 @@
       }
       h3 {
         font-size: smaller;
+        text-align: center;
       }
       p {
         color: var(--neutral-8);

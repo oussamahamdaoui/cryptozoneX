@@ -23,7 +23,7 @@
 <div class="variation-params">
   <slot name="head" />
   <Input bind:value={prop.name}>
-    <slot slot="label">Variant label</slot>
+    <slot slot="label">Variant title</slot>
   </Input>
   <DropDown bind:value={prop.type}>
     <slot slot="label">Varient type</slot>
@@ -58,7 +58,6 @@
   .variation-params {
     padding: 1rem 0.5rem;
     background-color: var(--neutral-2);
-    --bg: var(--neutral-2);
     border: 1px solid var(--neutral-7);
     border-top: none;
     display: flex;
@@ -66,6 +65,7 @@
     gap: 1em;
     border-radius: 0px 0px 3px 3px;
     margin-bottom: 1rem;
+    --bg: var(--neutral-2);
     label {
       width: max-content;
       cursor: pointer;
