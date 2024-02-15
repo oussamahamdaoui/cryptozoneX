@@ -1,24 +1,40 @@
 <script>
-  import { getContext } from "svelte";
-  import { SUPORTED_CURRENCIES } from "../Stores/currency";
+  import { SUPORTED_CURRENCIES, DEFAUL_CURRENCY } from "../Stores/currency";
   const currencies = SUPORTED_CURRENCIES;
-  const currencySymbol = getContext("currency");
-  export let price = 31089n;
+
+  export let price = 0n;
   export let useComa = false;
   export let lineTrough = false;
-  $: currency = currencies[$currencySymbol];
+  /**
+   * @type {keyof typeof SUPORTED_CURRENCIES}
+   */
+  export let currency = DEFAUL_CURRENCY;
+
+  /**
+   * @param {bigint} v
+   */
+  const stringifyPrice = (v) => {
+    const n = Math.log10(Number(currencyData.decimalPlace));
+    const s = v.toString().padStart(n + 1, "0");
+    const fct = s.slice(-n);
+    const int = s.slice(0, s.length - fct.length);
+    return currencyData.decimalPlace === 0n ? { int } : { int, fct };
+  };
+  $: currency = currency ?? DEFAUL_CURRENCY;
+  $: currencyData = currencies[currency];
+  $: disp = stringifyPrice(price);
 </script>
 
 <span class="price" class:lineTrough>
-  {#if currency.symbolPos === "left"}
-    <span class="super">{currency.symbol}</span>
+  {#if currencyData.symbolPos === "left"}
+    <span class="super">{currencyData.symbol}</span>
   {/if}
-  <span class="integerPart">{price / currency.decimalPlace}</span>
+  <span class="integerPart">{disp.int}</span>
   <span class:super={!useComa}>
-    {#if useComa}{currency.decimal}{/if}{price % currency.decimalPlace}
+    {#if useComa}{currencyData.decimal}{/if}{disp.fct}
   </span>
-  {#if currency.symbolPos === "right"}
-    <span class="super">{currency.symbol}</span>
+  {#if currencyData.symbolPos === "right"}
+    <span class="super">{currencyData.symbol}</span>
   {/if}
 </span>
 
@@ -43,7 +59,6 @@
   }
   .super {
     font-size: 0.5rem;
-    font-weight: lighter;
     align-self: flex-start;
     transform: translateY(15%);
   }

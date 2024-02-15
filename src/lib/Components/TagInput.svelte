@@ -1,9 +1,12 @@
 <script>
+  import { tick } from "svelte";
+
   export let label = "";
   export let placeholder = "";
   export { value };
   export let disabled = false;
 
+  let local = false;
   let val = "";
   /**
    * @type {HTMLElement}
@@ -29,16 +32,20 @@
     ...value.map((e) => ({ type: /**@type {const}**/ ("tag"), value: e })),
     { type: "input" },
   ];
-  $: value && updateTags();
-  $: tags && updateValue();
+  $: updateValue(tags);
+  $: updateTags(value);
   $: showPlaceholder = tags.length <= 1 && placeholder !== "" && val === "";
 
-  const updateValue = () => {
+  const updateValue = async (_) => {
+    local = true;
     value = tags
       .filter((e) => e.type !== "input")
       .map((e) => (e.type === "input" ? "" : e.value));
+    await tick();
+    local = false;
   };
-  const updateTags = () => {
+  const updateTags = (_) => {
+    if (local) return;
     tags = [
       ...[...new Set(value)].map((e) => ({
         type: /**@type {const}**/ ("tag"),

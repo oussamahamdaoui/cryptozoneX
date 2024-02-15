@@ -1,5 +1,5 @@
 <script>
-  import SideMenu from "../../Components/SideMenu.svelte";
+  import SideMenu from "./Components/SideMenu.svelte";
   import ShopEditor from "../../Components/ShopEditor.svelte";
   import SectionSelector from "../../Components/SectionSelector.svelte";
   import Draggable from "../../Components/Draggable.svelte";

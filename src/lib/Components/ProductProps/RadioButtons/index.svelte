@@ -23,8 +23,9 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    border: 2px solid var(--neutral-9);
+    border: 1px solid var(--neutral-9);
     border-radius: 3px;
+    background-color: var(--neutral-2);
     .title {
       max-width: 50%;
       text-align: justify;

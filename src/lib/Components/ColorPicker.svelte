@@ -92,10 +92,6 @@
   const handleBlur = (e) => {
     setTimeout(() => {
       if (!ctnr) return;
-      console.log(
-        ctnr.contains(document.activeElement),
-        document.activeElement
-      );
       if (
         ctnr.contains(document.activeElement) ||
         document.activeElement === ctnr

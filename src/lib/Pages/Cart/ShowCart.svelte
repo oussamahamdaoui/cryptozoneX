@@ -1,5 +1,5 @@
 <script>
-  import CartProduct from "./CartProduct.svelte";
+  import CartProduct from "./Components/CartProduct.svelte";
   import Input from "../../Components/Input.svelte";
   import RadioGroup from "../../Components/RadioGroup.svelte";
   import RadioOption from "../../Components/RadioOption.svelte";

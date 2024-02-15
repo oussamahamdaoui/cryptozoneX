@@ -30,6 +30,19 @@
       }
     }
   };
+  /**
+   *
+   * @param {string} rbga
+   */
+  const inverse = (rbga) => {
+    const rgb = rbga
+      .replace("rgba(", "")
+      .replace(")", "")
+      .split(",")
+      .map((e) => parseInt(e));
+    const luminance = 0.2126 * rgb[0] + 0.7152 * rgb[0] + 0.0722 * rgb[0];
+    return luminance < 140 ? "#ffffff" : "#000000";
+  };
 </script>
 
 <svelte:window on:keyup={keypress} />
@@ -45,7 +58,7 @@
         class:isSelected={option.name === selected}
         class:with-check={withCheck}
         class:defaultColor={!option.color}
-        style="--color:{option.color}"
+        style="--color:{option.color}; --fg:{inverse(option.color)}"
         on:click={() => select(option.name)}
         on:mouseover={() => {
           hovered = option.name;
@@ -111,6 +124,7 @@
     }
     i {
       font-weight: 900;
+      color: var(--fg);
     }
   }
 
@@ -119,7 +133,8 @@
     font-size: 0.8rem;
     display: flex;
     gap: 0.5rem;
-    align-items: baseline;
+    align-items: flex-end;
+    min-height: 1.5rem;
     span {
       color: var(--neutral-12);
       font-weight: 600;

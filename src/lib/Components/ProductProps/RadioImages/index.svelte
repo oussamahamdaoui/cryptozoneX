@@ -1,10 +1,9 @@
 <script>
-  export let colors = [];
+  export let variants = [];
   export let label = "Color:";
-  export let withCheck = true;
   let cls = "";
   export { cls as class };
-  let selected = colors[0]?.name;
+  let selected = variants[0]?.name;
   let hovered = "";
   let select = (s) => {
     selected = s;
@@ -39,11 +38,10 @@
     {label} <span>{hovered || (selected ? selected : "")}</span>
   </div>
   <div class="radios" bind:this={optionsEl}>
-    {#each colors as option}
+    {#each variants as option}
       <button
         class="radio"
         class:isSelected={option.name === selected}
-        class:with-check={withCheck}
         class:defaultColor={!option.color}
         style="--color:{option.color}"
         on:click={() => select(option.name)}
@@ -60,10 +58,10 @@
           hovered = "";
         }}
       >
-        {#if option.name === selected && withCheck}
-          <i class="ri-check-line" />
-        {:else if !withCheck}
-          <span>{option.name}</span>
+        {#if option.image}
+          <img src={option.image.src} alt={label} />
+        {:else}
+          <i class="ri-file-image-line"></i>
         {/if}
       </button>
     {/each}
@@ -82,9 +80,9 @@
   }
   .radio {
     background-color: var(--color);
-    width: 30px;
-    height: 30px;
-    border-radius: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,6 +90,7 @@
     border: 2px solid var(--neutral-7);
     outline: none;
     font-size: 0.5rem;
+    overflow: hidden;
     &.defaultColor {
       background-color: var(--neutral-2);
       color: var(--neutral-12);
@@ -111,6 +110,12 @@
     }
     i {
       font-weight: 900;
+      font-size: 1rem;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
 
@@ -119,7 +124,8 @@
     font-size: 0.8rem;
     display: flex;
     gap: 0.5rem;
-    align-items: baseline;
+    align-items: flex-end;
+    min-height: 1.5rem;
     span {
       color: var(--neutral-12);
       font-weight: 600;

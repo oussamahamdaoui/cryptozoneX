@@ -1,7 +1,7 @@
 <script>
   import { getContext } from "svelte";
   const location = getContext("location");
-  import Link from "./Routing/Link.svelte";
+  import Link from "../../../Components/Routing/Link.svelte";
   const link = $location.pathname;
   const links = [
     {
@@ -40,7 +40,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../globals.scss";
+  @use "../../../../globals.scss";
   .side-menu {
     display: flex;
     flex-direction: column;

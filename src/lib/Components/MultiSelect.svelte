@@ -23,6 +23,7 @@
   let empty = false;
   $: {
     search = search;
+    selected = selected ?? [];
     setTimeout(() => {
       empty = options?.children.length === 1;
     }, 10);
@@ -31,6 +32,7 @@
   const focusChange = () => {
     setTimeout(() => {
       if (!element) return;
+      if (oppener.contains(document.activeElement)) return;
       if (
         element.contains(document.activeElement) ||
         document.activeElement === element
@@ -124,7 +126,6 @@
     flex-direction: column;
     position: relative;
     outline: none;
-    min-width: 0;
 
     &.max {
       :global(.options > button) {

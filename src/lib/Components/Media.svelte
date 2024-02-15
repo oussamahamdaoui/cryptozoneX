@@ -4,12 +4,74 @@
   import { fileSelector, getUid } from "../utils";
   import TagInput from "./TagInput.svelte";
   import MediaGrid from "./MediaGrid.svelte";
+  import { createEventDispatcher } from "svelte";
 
   export let limit = Infinity;
-  export let tagsLabel = undefined;
+  export let tagsLabel = "Add tags";
 
   /**@type {ImageMedia[]}*/
-  export let mediaImages = [];
+  export let mediaImages = [
+    {
+      src: "https://digitalassets.tesla.com/image/upload/f_auto,q_auto/prod/coin/static_assets/MODEL3_/UI/Paint_StealthGrey.png",
+      id: getUid(),
+      tags: ["tesla color"],
+      uploadTime: Date.now(),
+    },
+    {
+      src: "https://digitalassets.tesla.com/image/upload/f_auto,q_auto/prod/coin/static_assets/MODEL3/UI/Paint_White.png?",
+      id: getUid(),
+      tags: ["tesla color"],
+      uploadTime: Date.now(),
+    },
+    {
+      src: "https://digitalassets.tesla.com/image/upload/f_auto,q_auto/prod/coin/static_assets/MODEL3/UI/Paint_Blue.png?",
+      id: getUid(),
+      tags: ["tesla color"],
+      uploadTime: Date.now(),
+    },
+    {
+      src: "https://digitalassets.tesla.com/image/upload/f_auto,q_auto/prod/coin/static_assets/MODEL3/UI/Paint_Black.png?",
+      id: getUid(),
+      tags: ["tesla color"],
+      uploadTime: Date.now(),
+    },
+    {
+      src: "https://digitalassets.tesla.com/image/upload/f_auto,q_auto/prod/coin/static_assets/MODEL3/UI/Paint_Red.png?",
+      id: getUid(),
+      tags: ["tesla color"],
+      uploadTime: Date.now(),
+    },
+    {
+      src: "https://digitalassets.tesla.com/image/upload/f_auto,q_auto/prod/coin/static_assets/MODELY/UI/gemini_wheels.png?",
+      id: getUid(),
+      tags: ["tesla wheels"],
+      uploadTime: Date.now(),
+    },
+    {
+      src: "https://digitalassets.tesla.com/image/upload/f_auto,q_auto/prod/coin/static_assets/MODELY/UI/induction_wheels.png?",
+      id: getUid(),
+      tags: ["tesla wheels"],
+      uploadTime: Date.now(),
+    },
+    {
+      src: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-pro-finish-naturaltitanium-202309?wid=204&amp;hei=204&amp;fmt=jpeg&amp;qlt=90&amp;.v=1692895385156",
+      id: getUid(),
+      tags: ["apple color"],
+      uploadTime: Date.now(),
+    },
+    {
+      src: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-pro-finish-bluetitanium-202309?wid=204&amp;hei=204&amp;fmt=jpeg&amp;qlt=90&amp;.v=1692895385157",
+      id: getUid(),
+      tags: ["apple color"],
+      uploadTime: Date.now(),
+    },
+    {
+      src: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-pro-finish-whitetitanium-202309?wid=204&amp;hei=204&amp;fmt=jpeg&amp;qlt=90&amp;.v=1692895385155",
+      id: getUid(),
+      tags: ["apple color"],
+      uploadTime: Date.now(),
+    },
+  ];
 
   /**
    *
@@ -23,6 +85,11 @@
   export let defaultPanel = "import";
 
   /**
+   * @type {ImageMedia|ImageMedia[]}
+   */
+  export let value = null;
+
+  /**
    * @typedef {({src: string;tags: string[]; uploadTime:number, id:string})} ImageMedia
    * **/
 
@@ -30,6 +97,7 @@
   /**@type {ImageMedia[]}*/
   let toUpload = [];
   let selectedImages = new Set();
+  let outputImages = new Set();
   let allTags = [];
 
   const sortFns = [
@@ -49,11 +117,16 @@
   let filterText = [];
   let drag = false;
 
+  $: active = outputImages.size > 0;
+
+  const dispatch = createEventDispatcher();
+
   const clearImages = () => {
     toUpload = [];
   };
 
   const handleFiles = async (files) => {
+    selectedImages.clear();
     toUpload = (
       await Promise.all(
         files.map((e) => {
@@ -91,7 +164,6 @@
      */
     let files = [];
     if (ev.dataTransfer.items) {
-      console.log("hee");
       files = [...ev.dataTransfer.items]
         .filter((item) => {
           return item.kind === "file";
@@ -128,6 +200,25 @@
   const fuzzySearch = (s, v) => {
     return s === v || v.toLowerCase().includes(s.toLowerCase());
   };
+
+  const select = () => {
+    const vl = [...outputImages.values()].map((id) => {
+      return mediaImages.find((e) => e.id === id);
+    });
+    if (limit === 1) {
+      value = vl[0];
+    } else {
+      value = vl;
+    }
+    dispatch("submit", value);
+  };
+
+  const valueChange = (_) => {
+    const vl = [value || []].flat().slice(0, limit);
+    outputImages = new Set(vl.map((e) => e.id));
+  };
+
+  $: valueChange(value);
 
   $: filter = (/** @type {ImageMedia} */ e) =>
     filterText.length === 0 ||
@@ -184,7 +275,7 @@
             ></MediaGrid>
             <div class="tags">
               <TagInput
-                label={tagsLabel || "Add tags"}
+                label={tagsLabel}
                 bind:value={allTags}
                 disabled={selectedImages.size === 0}
               ></TagInput>
@@ -222,8 +313,12 @@
           {limit}
           images={mediaImages}
           bind:sort={sortFns[sort]}
+          bind:selectedImages={outputImages}
           {filter}
         ></MediaGrid>
+        <button class="submit" on:click={select} class:active
+          >Confirm Selection</button
+        >
       </Tab>
     </slot>
   </Tabs>
@@ -234,7 +329,7 @@
     display: flex;
     flex-direction: column;
     height: 360px;
-    max-height: 360px;
+    max-height: 380px;
     width: 100%;
     position: relative;
     z-index: 1;
@@ -249,6 +344,19 @@
       overflow: hidden;
     }
 
+    .submit {
+      align-self: center;
+      background-color: var(--primary-4);
+      border: 1px solid var(--primary-8);
+      border-radius: 3px;
+      padding: 1rem 2rem;
+      opacity: 0.3;
+      pointer-events: none;
+      &.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+    }
     :global(.tag-input) {
       flex: 1;
     }

@@ -5,18 +5,17 @@
   import Price from "./Price.svelte";
   import HelperText from "./ProductProps/HelperText.svelte";
   import Rateing from "./Rating.svelte";
-  import SizeSelector from "./SizeSelector.svelte";
   import { getContext } from "svelte";
   /*** @type {string}*/
   export let id = undefined;
 
   const t = getContext("t");
+  const currency = getContext("currency");
   const cache = {};
   $: variations = [];
+  $: updateVariations($t);
 
-  $: $t(`products.${id}.variations`) && updateVariations();
-
-  const updateVariations = async () => {
+  const updateVariations = async (_) => {
     variations = await Promise.all(
       ($t(`products.${id}.variations`) || []).map(async (variation) => {
         let component;
@@ -27,11 +26,22 @@
             await import(`./ProductProps/${variation.type}/index.svelte`)
           ).default;
         }
-        // variation.component = component;
         return { variation, component };
       })
     );
-    console.log(variations);
+  };
+
+  const getPercent = (_) => {
+    /**
+     * @type {bigint}
+     */
+    const a = $t(`products.${id}.promotions.${$currency}`);
+    /**
+     * @type {bigint}
+     */
+    const b = $t(`products.${id}.productPrices.${$currency}`);
+    if (b === 0n) return "0.0";
+    return (Number(((a - b) * 10000n) / b) / 100).toFixed(1);
   };
 </script>
 
@@ -40,14 +50,25 @@
   <div class="info">
     <h1>{$t(`products.${id}.productName`)}</h1>
     <h2 class="price">
-      <span class="promo">-50%</span>
-      <Price price={BigInt($t(`products.${id}.productPrice`) || 0)} />
-      <h4 class="old-price">
-        Old Price: <Price
-          price={BigInt($t(`products.${id}.productPrice`) || 0)}
-          lineTrough
+      {#if $t(`products.${id}.promotions.${$currency}`) !== undefined}
+        <span class="promo">{getPercent($t)}%</span>
+        <Price
+          price={$t(`products.${id}.promotions.${$currency}`)}
+          currency={$currency}
         />
-      </h4>
+        <h4 class="old-price">
+          Old Price: <Price
+            price={$t(`products.${id}.productPrices.${$currency}`) || 0n}
+            currency={$currency}
+            lineTrough
+          />
+        </h4>
+      {:else}
+        <Price
+          price={$t(`products.${id}.productPrices.${$currency}`) || 0n}
+          currency={$currency}
+        />
+      {/if}
     </h2>
     <h5>Seller: <a href="/">05RFC1230</a></h5>
     <Rateing value={1.6} disabled />

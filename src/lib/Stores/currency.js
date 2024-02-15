@@ -13,9 +13,39 @@ export const SUPORTED_CURRENCIES = {
     symbol: "€",
     decimal: ",",
   },
+  INR: {
+    decimalPlace: 100n,
+    symbolPos: "right",
+    symbol: "₹",
+    decimal: ",",
+  },
 };
 
-export const currency = writable("EUR");
-export const digits = derived(currency, ($curr) => {
-  return SUPORTED_CURRENCIES[$curr];
-});
+export const DEFAUL_CURRENCY = "USD";
+
+export const exchange = (exchangeRates) => (amount, of, to) => {
+  const amountUSD = amount * exchangeRates[of];
+  return amountUSD / exchangeRates[to];
+};
+
+export const newCurrencyStore = () => {
+  /**
+   * @type {import("svelte/store").Writable<keyof typeof SUPORTED_CURRENCIES>}
+   */
+  const currency = writable(DEFAUL_CURRENCY);
+  const currencyData = derived(currency, ($curr) => {
+    return SUPORTED_CURRENCIES[$curr];
+  });
+
+  const exchangeRates = writable({
+    USD: 1_000000000n,
+    EUR: 1_072097600n,
+    INR: 12043063n,
+  });
+
+  return {
+    currency,
+    currencyData,
+    exchangeRates,
+  };
+};

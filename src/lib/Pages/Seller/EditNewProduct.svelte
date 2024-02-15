@@ -3,7 +3,7 @@
   import Input from "../../Components/Input.svelte";
   import MultiSelect from "../../Components/MultiSelect.svelte";
   import LanguageSelector from "../../Components/ParamTypes/LanguageSelector.svelte";
-  import SideMenu from "../../Components/SideMenu.svelte";
+  import SideMenu from "./Components/SideMenu.svelte";
   import ToolTip from "../../Components/ToolTip.svelte";
   import Params from "../../Components/ProductProps/Params.svelte";
   import { categories as c, getUid, swap } from "../../utils";
@@ -12,24 +12,54 @@
   import ProductPreview from "../../Components/ProductPreview.svelte";
   import CurrencySelector from "../../Components/CurrencySelector.svelte";
   import Link from "../../Components/Routing/Link.svelte";
-  import { getContext } from "svelte";
-  import { SUPORTED_CURRENCIES } from "../../Stores/currency";
+  import { getContext, setContext } from "svelte";
+  import {
+    SUPORTED_CURRENCIES,
+    exchange,
+    newCurrencyStore,
+  } from "../../Stores/currency";
   import Media from "../../Components/Media.svelte";
 
-  const updateTranslation = getContext("updateTranslation");
+  import {
+    DEFAULT_LANG,
+    SUPPORTED_LANGS,
+    newLangContext,
+  } from "../../Stores/lang";
+
   const t = getContext("t");
 
+  const exchangeRates = getContext("exchangeRates");
+
+  const { t: nt, updateTranslation, lang } = newLangContext();
+  const { currency, currencyData } = newCurrencyStore();
+
+  setContext("currency", currency);
+  setContext("currencyData", currencyData);
+
+  setContext("t", nt);
+
+  let swapCurrencies = exchange($exchangeRates);
+
   let categories = c.filter((c) => c !== "all");
-  let properties = {};
-  let language;
+  let properties = {
+    promotions: {},
+    productPrices: {},
+    ...SUPPORTED_LANGS.reduce((acc, l) => {
+      acc[l] = {
+        productName: "",
+        variations: [],
+      };
+      return acc;
+    }, {}),
+  };
+  const globalProps = {
+    promotions: properties.promotions,
+    productPrices: properties.productPrices,
+  };
+  let language = DEFAULT_LANG;
+  let hasPromotion = false;
   const intitialCurrency = getContext("currency");
   let selectedCurrency = $intitialCurrency;
-
-  $: properties[language] = properties[language] ?? {
-    productName: "",
-    productPrice: "",
-    variations: [],
-  };
 
   const swapVariants = (a, b) => {
     swap(properties[language].variations, a, b);
@@ -58,16 +88,29 @@
     );
   };
 
+  const recalculatePrices = () => {
+    const from = selectedCurrency;
+    const amount = properties.productPrices[selectedCurrency];
+    Object.keys(SUPORTED_CURRENCIES).forEach((to) => {
+      if (from === to) return;
+      properties.productPrices[to] = swapCurrencies(amount, from, to);
+    });
+  };
   $: {
+    lang.set(language);
+    currency.set(selectedCurrency);
     updateTranslation(
       {
         [language]: {
           products: {
-            preview: properties[language],
+            preview: {
+              ...properties[language],
+              ...globalProps,
+            },
           },
         },
       },
-      t
+      nt
     );
   }
 </script>
@@ -84,9 +127,10 @@
       </Input>
       <div class="wrap">
         <Input
-          bind:value={properties[language].productPrice}
+          bind:value={properties.productPrices[selectedCurrency]}
           type="price"
           digits={SUPORTED_CURRENCIES[selectedCurrency].decimalPlace}
+          on:change={recalculatePrices}
         >
           <slot slot="label">{$t("seller.product.productPriceLabel")}</slot>
         </Input>
@@ -103,6 +147,21 @@
           </slot>
         </ToolTip>
       </div>
+      <label>
+        <CheckBox bind:checked={hasPromotion}></CheckBox>
+        <slot>Discount</slot>
+      </label>
+      {#if hasPromotion}
+        <div class="wrap">
+          <Input
+            bind:value={properties.promotions[selectedCurrency]}
+            type="price"
+            digits={SUPORTED_CURRENCIES[selectedCurrency].decimalPlace}
+          >
+            <slot slot="label">{$t("seller.product.productPriceLabel")}</slot>
+          </Input>
+        </div>
+      {/if}
       <MultiSelect placeholder={$t("seller.product.selectCategory")} max={10}>
         <slot slot="selected" let:selected let:toggle>
           {#each selected as categorie}
@@ -188,6 +247,11 @@
     align-items: flex-start;
     flex: 1;
     width: 100%;
+    .props-list {
+      :global(.draggable) {
+        margin-bottom: 1rem;
+      }
+    }
 
     .params {
       display: flex;
@@ -200,6 +264,10 @@
       position: sticky;
       top: 0;
       z-index: 2;
+      label {
+        width: fit-content;
+        cursor: pointer;
+      }
       .props-list {
         display: flex;
         flex-direction: column;

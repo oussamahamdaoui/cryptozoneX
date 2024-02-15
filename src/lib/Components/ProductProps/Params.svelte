@@ -64,7 +64,6 @@
     flex-direction: column;
     gap: 1em;
     border-radius: 0px 0px 3px 3px;
-    margin-bottom: 1rem;
     --bg: var(--neutral-2);
     label {
       width: max-content;

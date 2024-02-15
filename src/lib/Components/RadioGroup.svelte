@@ -23,7 +23,6 @@
         optionsEl.firstElementChild?.["focus"]();
       }
     }
-    console.log(selected);
   };
 </script>
 

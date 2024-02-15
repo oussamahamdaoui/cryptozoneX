@@ -55,6 +55,8 @@ export const swap = (arr, idxA, idxB) => {
 
 export const eq = (objA, objB) => {
   if (typeof objA !== typeof objB) return false;
+  if (objA === objB) return true;
+  if (null === objA || null === objB) return false;
   if (Array.isArray(objA) && Array.isArray(objB)) {
     return (
       objA.length === objB.length &&
@@ -77,7 +79,7 @@ export const eq = (objA, objB) => {
       }, true)
     );
   }
-  return objA === objB;
+  return false;
 };
 
 export const copy = (obj) => {

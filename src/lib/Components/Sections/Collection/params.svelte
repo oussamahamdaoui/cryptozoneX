@@ -4,9 +4,6 @@
   import Params from "../Params.svelte";
   export let params;
   export let id;
-  $: {
-    console.log(params);
-  }
   $: params = params ?? {
     title: "",
     collections: [],

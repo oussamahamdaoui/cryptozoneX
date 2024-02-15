@@ -4,8 +4,11 @@ import { I18n } from "i18n-js";
 export const DEFAULT_LANG = "fr";
 export const SUPPORTED_LANGS = ["fr", "en"];
 
-export const newLangContext = () => {
+export const newLangContext = (store) => {
   const i18n = new I18n();
+  if (store) {
+    i18n.store(store);
+  }
   i18n.missingTranslation.get = () => {
     return undefined;
   };

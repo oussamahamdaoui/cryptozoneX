@@ -11,12 +11,13 @@
   export { pathname, is404 };
 
   $: {
+    const trimmed = $location.pathname.replace(/\/$/, "");
     if (typeof pathname === "string") {
-      show = $location.pathname === pathname;
+      show = trimmed === pathname.replace(/\/$/, "");
     } else if (typeof pathname === "function") {
       show = pathname($location);
     } else if (pathname instanceof RegExp) {
-      show = pathname.test($location.pathname);
+      show = pathname.test(trimmed);
     } else {
       show = false;
     }

@@ -50,6 +50,7 @@
   .tabs {
     display: flex;
     flex-direction: column;
+    position: relative;
     .head {
       display: flex;
       gap: 1rem;

@@ -3,7 +3,8 @@
   const currency = getContext("currency");
   import { cls } from "../utils";
   import DropDown from "./DropDown.svelte";
-  export let value = "EUR";
+  import { SUPORTED_CURRENCIES, DEFAUL_CURRENCY } from "../Stores/currency";
+  export let value = DEFAUL_CURRENCY;
   export let global = true;
   $: global && currency.set(value);
 </script>
@@ -12,8 +13,9 @@
   <slot name="label" slot="label" />
   <slot slot="value" let:value>{value}</slot>
   <slot slot="options" let:change>
-    <button on:click={change("EUR")}>EUR</button>
-    <button on:click={change("USD")}>USD</button>
+    {#each Object.keys(SUPORTED_CURRENCIES) as curr}
+      <button on:click={change(curr)}>{curr}</button>
+    {/each}
   </slot>
 </DropDown>
 

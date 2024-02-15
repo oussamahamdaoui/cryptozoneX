@@ -24,31 +24,36 @@
   };
 </script>
 
-<div
-  class="profile"
-  on:mouseenter={openMenu}
-  on:mouseleave={closeMenu}
-  role="tooltip"
->
+<div class="profile">
   {#if $user}
-    <button>
-      <i class="ri-user-3-fill" />
-      <span>{$t("greeting.name", { name: $user.name })}</span>
-    </button>
-    <div class="profileMenu" class:isOpen>
-      <Link href="/my-shop">
-        <i class="ri-store-fill" />
-        My shop
-      </Link>
-      <Link href="/">
-        <i class="ri-shopping-bag-3-fill" />
-        Shopping
-      </Link>
-      <ThemeSelector />
-      <button on:click={logOut}>
-        <i class="ri-logout-box-fill" />
-        Log out
+    <Link href="/my-shop">
+      <i class="ri-notification-fill"></i>
+    </Link>
+    <div
+      role="tooltip"
+      class="menuContainer"
+      on:mouseenter={openMenu}
+      on:mouseleave={closeMenu}
+    >
+      <button>
+        <i class="ri-user-3-fill" />
+        <span>{$t("greeting.name", { name: $user.name })}</span>
       </button>
+      <div class="profileMenu" class:isOpen>
+        <Link href="/my-shop">
+          <i class="ri-store-fill" />
+          My shop
+        </Link>
+        <Link href="/">
+          <i class="ri-shopping-bag-3-fill" />
+          Shopping
+        </Link>
+        <ThemeSelector />
+        <button on:click={logOut}>
+          <i class="ri-logout-box-fill" />
+          Log out
+        </button>
+      </div>
     </div>
   {:else}
     <div class="flex">
@@ -64,9 +69,13 @@
 <style lang="scss">
   @use "/src/globals.scss";
   .profile {
-    position: relative;
-    cursor: pointer;
     z-index: 199;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .menuContainer {
+      position: relative;
+    }
     &:hover {
       button {
         color: var(--neutral-12);

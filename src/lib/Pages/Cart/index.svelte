@@ -1,5 +1,12 @@
 <script>
-    import CartPareview from "./CartPareview.svelte";
+  import Route from "../../Components/Routing/Route.svelte";
+  import TopMenu from "../../Components/TopMenu.svelte";
+  import ShowCart from "./ShowCart.svelte";
 
+  const CART = "/cart";
 </script>
-<CartPareview></CartPareview>
+
+<Route pathname={CART}>
+  <TopMenu></TopMenu>
+  <ShowCart />
+</Route>

@@ -1,7 +1,7 @@
 <script>
   import Link from "../../Components/Routing/Link.svelte";
-  import SideMenu from "../../Components/SideMenu.svelte";
-  import SellerOrders from "./SellerOrders.svelte";
+  import SideMenu from "./Components/SideMenu.svelte";
+  import SellerOrders from "./IndexOrders.svelte";
 </script>
 
 <div class="seller-dashboard">
