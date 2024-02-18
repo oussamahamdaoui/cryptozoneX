@@ -154,11 +154,6 @@
       display: flex;
       flex: 1;
     }
-    // .error {
-    //   font-size: 0.5rem;
-    //   padding-left: 2rem;
-    //   margin-bottom: 0.2rem;
-    // }
     input {
       border: none;
       background-color: transparent;
@@ -168,9 +163,6 @@
       color: var(--neutral-12);
       flex: 1;
       width: 100%;
-      ::placeholder {
-        color: red;
-      }
     }
     textarea {
       font-size: 1rem;

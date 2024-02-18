@@ -2,7 +2,6 @@
   import { getContext } from "svelte";
   const location = getContext("location");
   import Link from "../../../Components/Routing/Link.svelte";
-  const link = $location.pathname;
   const links = [
     {
       href: "/dashboard",
@@ -29,11 +28,12 @@
       icon: "ri-bar-chart-box-fill",
     },
   ];
+  $: link = $location.pathname;
 </script>
 
 <div class="side-menu">
   {#each links as l}
-    <Link href={l.href} class={link === l.href ? "selected" : ""}>
+    <Link href={l.href} class={link.startsWith(l.href) ? "selected" : ""}>
       <i class={l.icon} />
     </Link>
   {/each}

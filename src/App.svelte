@@ -38,8 +38,8 @@
   setContext("theme", theme);
   setContext("cart", cart);
 
-  setContext("t", t);
   setContext("lang", lang);
+  setContext("t", t);
   setContext("updateTranslation", updateTranslation);
 
   setContext("location", location);

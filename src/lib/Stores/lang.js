@@ -1,7 +1,8 @@
 import { writable } from "svelte/store";
 import { I18n } from "i18n-js";
+import deflang from "../i18n/en.json";
 
-export const DEFAULT_LANG = "fr";
+export const DEFAULT_LANG = "en";
 export const SUPPORTED_LANGS = ["fr", "en"];
 
 export const newLangContext = (store) => {
@@ -9,6 +10,7 @@ export const newLangContext = (store) => {
   if (store) {
     i18n.store(store);
   }
+
   i18n.missingTranslation.get = () => {
     return undefined;
   };
@@ -25,6 +27,9 @@ export const newLangContext = (store) => {
 
   const lang = writable(DEFAULT_LANG);
   const t = writable(geter);
+
+  i18n.store(deflang);
+  i18n.locale = DEFAULT_LANG;
 
   lang.subscribe(async (v) => {
     if (!i18n.availableLocales.includes(v)) {

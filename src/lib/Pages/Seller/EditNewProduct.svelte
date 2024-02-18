@@ -25,6 +25,7 @@
     SUPPORTED_LANGS,
     newLangContext,
   } from "../../Stores/lang";
+  import DatePicker from "../../Components/DatePicker.svelte";
 
   const t = getContext("t");
 
@@ -147,21 +148,7 @@
           </slot>
         </ToolTip>
       </div>
-      <label>
-        <CheckBox bind:checked={hasPromotion}></CheckBox>
-        <slot>Discount</slot>
-      </label>
-      {#if hasPromotion}
-        <div class="wrap">
-          <Input
-            bind:value={properties.promotions[selectedCurrency]}
-            type="price"
-            digits={SUPORTED_CURRENCIES[selectedCurrency].decimalPlace}
-          >
-            <slot slot="label">{$t("seller.product.productPriceLabel")}</slot>
-          </Input>
-        </div>
-      {/if}
+
       <MultiSelect placeholder={$t("seller.product.selectCategory")} max={10}>
         <slot slot="selected" let:selected let:toggle>
           {#each selected as categorie}
@@ -191,6 +178,25 @@
           {/each}
         </slot>
       </MultiSelect>
+      <label>
+        <CheckBox bind:checked={hasPromotion}></CheckBox>
+        <slot>Discount</slot>
+      </label>
+      {#if hasPromotion}
+        <div class="wrap">
+          <Input
+            bind:value={properties.promotions[selectedCurrency]}
+            type="price"
+            digits={SUPORTED_CURRENCIES[selectedCurrency].decimalPlace}
+          >
+            <slot slot="label">{$t("seller.product.productPriceLabel")}</slot>
+          </Input>
+          <DatePicker placeholder="Pick promotion duration" type="range">
+            <slot slot="label">{"Promotion duration"}</slot>
+          </DatePicker>
+        </div>
+      {/if}
+
       <h3>{"Product Images"}</h3>
       <Media limit={5}></Media>
       <h3>{$t("seller.product.variationsTitle")}</h3>

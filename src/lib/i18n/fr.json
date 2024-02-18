@@ -51,7 +51,7 @@
     },
     "date": {
       "weekDays": {
-        "short": [
+        "s": [
           "Lun",
           "Mar",
           "Mer",
@@ -60,7 +60,7 @@
           "Sam",
           "Dim"
         ],
-        "full": [
+        "l": [
           "Lundi",
           "Mardi",
           "Mercredi",
@@ -71,23 +71,47 @@
         ]
       },
       "months": {
-        "full": [
-          "Janvier",
-          "Fevrier",
-          "Mars",
-          "Avril",
-          "Mai",
-          "Juin",
-          "Juillet",
-          "Aout",
-          "September",
-          "Octobre",
-          "Novembre",
-          "Decembre"
+        "l": [
+          "janvier",
+          "février",
+          "mars",
+          "avril",
+          "mai",
+          "juin",
+          "juillet",
+          "août",
+          "septembre",
+          "octobre",
+          "novembre",
+          "décembre"
+        ],
+        "s": [
+          "janv",
+          "févr",
+          "mars",
+          "avr",
+          "mai",
+          "juin",
+          "juill",
+          "août",
+          "sept",
+          "oct",
+          "nov",
+          "déc"
         ]
       },
+      "firstDayOfWeek": 1,
       "today": "Aujourd'hui",
-      "format": {}
+      "format": {
+        "numeric-short": "dd-mm-yy",
+        "numeric-long": "dd-mm-yyyy",
+        "xxs": "dd M",
+        "xs": "dd M yy",
+        "s": "dd MM yy",
+        "m": "D dd MM yy",
+        "l": "DD dd MM yy",
+        "xl": "DD dd MM yyyy"
+      }
     },
     "globals": {
       "currency": "Devise",

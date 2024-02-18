@@ -51,7 +51,7 @@
     },
     "date": {
       "weekDays": {
-        "short": [
+        "s": [
           "Mon",
           "Tue",
           "Wed",
@@ -59,10 +59,19 @@
           "Fri",
           "Sat",
           "Sun"
+        ],
+        "l": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
         ]
       },
       "months": {
-        "full": [
+        "l": [
           "January",
           "February",
           "March",
@@ -75,9 +84,34 @@
           "Octobre",
           "Novembre",
           "Decembre"
+        ],
+        "s": [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "June",
+          "July",
+          "Aug",
+          "Sept",
+          "Oct",
+          "Nov",
+          "Dec"
         ]
       },
-      "today": "Today"
+      "firstDayOfWeek": 1,
+      "today": "Today",
+      "format": {
+        "numeric-short": "mm/dd/yy",
+        "numeric-long": "mm/dd/yyyy",
+        "xxs": "M dd",
+        "xs": "M dd yy",
+        "s": "MM dd yy",
+        "m": "D MM dd yy",
+        "l": "DD MM dd yy",
+        "xl": "DD MM dd yyyy"
+      }
     },
     "globals": {
       "currency": "Currency",

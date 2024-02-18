@@ -27,11 +27,9 @@
       <h1>{$t("login.createAccount")}</h1>
       <Input>
         <slot slot="label">{$t("globals.email")}</slot>
-        <slot slot="error" />
       </Input>
       <Input>
         <slot slot="label">{$t("globals.name")}</slot>
-        <slot slot="error" />
       </Input>
       <button on:click={logIn}>{$t("login.login")}</button>
       <div class="switchLogin">
@@ -42,7 +40,6 @@
       <h1>{$t("login.useAccount")}</h1>
       <Input>
         <slot slot="label">{$t("globals.email")}</slot>
-        <slot slot="error" />
       </Input>
       <button on:click={logIn}>{$t("login.login")}</button>
       <div class="switchLogin">
