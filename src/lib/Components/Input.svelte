@@ -1,31 +1,64 @@
 <script>
-  import { tick } from "svelte";
+  import { getContext, tick } from "svelte";
+  import Diff from "../Components/Icons/Diff.svelte";
+  import { SUPPORTED_CURRENCIES } from "../Stores/currency";
+
+  const defaults = {
+    price: 0n,
+    diff: 0n,
+    text: "",
+    password: "",
+    textarea: "",
+  };
 
   /**
-   * @type {"text"|"password"|"textarea"|"price"}
+   * @type {"text"|"password"|"textarea"|"price"|"diff"}
    */
   export let type = "text";
   /**
    * @type {string|bigint}
    */
-  export let value = type !== "price" ? "" : 0n;
+  export let value = defaults[type];
+  const currencyCtx = getContext("currency");
+  /**
+   * @type {keyof typeof SUPPORTED_CURRENCIES}
+   */
+  export let currency = undefined;
+
+  if (!currency) {
+    currency = $currencyCtx;
+    currencyCtx.subscribe((nc) => {
+      currency = nc;
+    });
+  }
+
   export let placeholder = "";
-  export let digits = 0n;
   let className = "";
   export { className as class };
+
+  let digits = ["price", "diff"].includes(type)
+    ? SUPPORTED_CURRENCIES[currency].decimalPlace
+    : 0n;
 
   /**
    * @param {string} v
    */
   const parsePrice = (v) => {
     if (digits === 0n) return BigInt(v);
-    const pt = v.indexOf(".");
+    const pt = v.indexOf(SUPPORTED_CURRENCIES[currency].decimal);
     if (pt === -1) {
       return BigInt(v) * digits;
     }
     const int = v.slice(0, pt);
     const fct = v.slice(pt + 1).padEnd(Math.log10(Number(digits)), "0");
     return BigInt(int) * digits + BigInt(fct);
+  };
+
+  const parseDiff = (v) => {
+    if (v.startsWith("-") || v.startsWith("+")) {
+      return parsePrice(v.slice(1)) * (v.startsWith("-") ? -1n : 1n);
+    }
+    return parsePrice(v);
   };
 
   /**
@@ -36,7 +69,19 @@
     const s = v.toString().padStart(n + 1, "0");
     const fct = s.slice(-n);
     const int = s.slice(0, s.length - fct.length);
-    return digits === 0n ? int : `${int}.${fct}`;
+    return digits === 0n
+      ? int
+      : `${int}${SUPPORTED_CURRENCIES[currency].decimal}${fct}`;
+  };
+
+  /**
+   * @param {bigint} v
+   */
+  const stringifyDiff = (v) => {
+    if (v > 0) {
+      return stringifyPrice(v);
+    }
+    return stringifyPrice(-v);
   };
 
   /**
@@ -46,28 +91,39 @@
    */
   const stringify = (v) => {
     if (type === "price") return stringifyPrice(v);
+    if (type === "diff") return stringifyDiff(v);
     return v;
   };
   let stringValue = stringify(value);
   let local = false;
 
-  const updateValue = (_) => {
+  const updateValue = (..._) => {
     if (local === false) {
       stringValue = " ";
-      value = value ?? (type !== "price" ? "" : 0n);
+      value = value ?? defaults[type];
       stringValue = stringify(value);
     }
   };
 
-  $: updateValue(value);
-
   const checkPrice = (value) => {
-    return (
-      value.match(/^(([1-9][0-9]*)|(0))([.,][0-9]*)?$|^$/) &&
-      (value.indexOf(".") === -1 ||
-        value.slice(value.indexOf(".") + 1).length <=
-          Math.log10(Number(digits)))
+    const reg = new RegExp(
+      `^(([1-9][0-9]*)|(0))([${SUPPORTED_CURRENCIES[currency].decimal}][0-9]*)?$|^$`
     );
+    return (
+      value.match(reg) &&
+      (value.indexOf(SUPPORTED_CURRENCIES[currency].decimal) === -1 ||
+        value.slice(value.indexOf(SUPPORTED_CURRENCIES[currency].decimal) + 1)
+          .length <= Math.log10(Number(digits)))
+    );
+  };
+  /**
+   *
+   * @param {string}value
+   */
+  const checkDiff = (value) => {
+    return value.startsWith("+") || value.startsWith("-")
+      ? checkPrice(value.slice(1))
+      : checkPrice(value);
   };
 
   const handleInput = async (e) => {
@@ -80,6 +136,13 @@
         stringValue = target.value;
       }
       value = parsePrice(stringValue);
+    } else if (type === "diff") {
+      if (!checkDiff(target.value)) {
+        target.value = stringValue;
+      } else {
+        stringValue = target.value;
+      }
+      value = parseDiff(stringValue);
     } else {
       value = target.value;
       stringValue = target.value;
@@ -87,6 +150,19 @@
     await tick();
     local = false;
   };
+
+  const toggleNeg = async () => {
+    local = true;
+    value = BigInt(value) * -1n;
+    stringValue = stringify(value);
+    await tick();
+    local = false;
+  };
+
+  $: updateValue(value, currency);
+  $: {
+    digits = SUPPORTED_CURRENCIES[currency].decimalPlace;
+  }
 </script>
 
 <label class="input {className}">
@@ -95,11 +171,21 @@
   </div>
   <div class="content">
     <slot name="iconLeft" />
+    {#if type === "diff"}
+      <button
+        class="sig"
+        class:pos={BigInt(value) > 0n}
+        class:neg={BigInt(value) < 0n}
+        on:click={toggleNeg}
+      >
+        <Diff></Diff>
+      </button>
+    {/if}
     {#if type === "textarea"}
       <textarea {placeholder} on:input={handleInput} on:change
         >{stringValue}</textarea
       >
-    {:else if type === "price"}
+    {:else if ["price", "diff"].includes(type)}
       <input
         type="text"
         inputmode="numeric"
@@ -112,8 +198,8 @@
       <input
         {type}
         {placeholder}
-        on:input={handleInput}
         value={stringValue}
+        on:input={handleInput}
         on:change
       />
     {/if}
@@ -133,6 +219,25 @@
     border: 1px solid var(--neutral-9);
     border-radius: 3px;
     cursor: text;
+    .sig {
+      background-color: transparent;
+      color: var(--neutral-9);
+      border: 0;
+      padding: 0 0.5rem;
+      &:hover {
+        background-color: var(--neutral-2);
+      }
+      &.neg {
+        :global(.neg) {
+          color: var(--primary-9);
+        }
+      }
+      &.pos {
+        :global(.pos) {
+          color: var(--primary-9);
+        }
+      }
+    }
     &:focus-within {
       border: 1px solid var(--primary-8);
       .label {

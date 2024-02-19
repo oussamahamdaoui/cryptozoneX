@@ -1,12 +1,13 @@
 <script>
-  import { SUPORTED_CURRENCIES, DEFAUL_CURRENCY } from "../Stores/currency";
-  const currencies = SUPORTED_CURRENCIES;
+  import { SUPPORTED_CURRENCIES, DEFAUL_CURRENCY } from "../Stores/currency";
+  const currencies = SUPPORTED_CURRENCIES;
 
   export let price = 0n;
   export let useComa = false;
   export let lineTrough = false;
+  export let withSign = false;
   /**
-   * @type {keyof typeof SUPORTED_CURRENCIES}
+   * @type {keyof typeof SUPPORTED_CURRENCIES}
    */
   export let currency = DEFAUL_CURRENCY;
 
@@ -14,6 +15,9 @@
    * @param {bigint} v
    */
   const stringifyPrice = (v) => {
+    if (v < 0) {
+      v = -v;
+    }
     const n = Math.log10(Number(currencyData.decimalPlace));
     const s = v.toString().padStart(n + 1, "0");
     const fct = s.slice(-n);
@@ -26,6 +30,9 @@
 </script>
 
 <span class="price" class:lineTrough>
+  {#if withSign}
+    {price < 0n ? "-" : price > 0 ? "+" : ""}
+  {/if}
   {#if currencyData.symbolPos === "left"}
     <span class="super">{currencyData.symbol}</span>
   {/if}

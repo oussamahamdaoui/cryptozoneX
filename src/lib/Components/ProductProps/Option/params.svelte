@@ -1,4 +1,6 @@
 <script>
+  import { getContext } from "svelte";
+  import { SUPPORTED_CURRENCIES, exchange } from "../../../Stores/currency";
   import { getUid, swap } from "../../../utils";
   import Drag from "../../Drag.svelte";
   import Draggable from "../../Draggable.svelte";
@@ -11,11 +13,18 @@
     label: "",
   };
 
+  const currency = getContext("currency");
+  const exchangeRates = getContext("exchangeRates");
+  let swapCurrencies = exchange($exchangeRates);
+
   const addOption = () => {
     props.options.push({
       label: "",
       id: getUid(),
-      addPrice: 0,
+      addPrice: Object.keys(SUPPORTED_CURRENCIES).reduce((acc, c) => {
+        acc[c] = 0n;
+        return acc;
+      }, {}),
     });
     props = props;
   };
@@ -26,6 +35,16 @@
   const swapOption = (a, b) => {
     swap(props.options, a, b);
     props = props;
+  };
+
+  const updatePrices = (id) => () => {
+    const option = props.options.find((c) => c.id === id);
+    const from = $currency;
+    const amount = option.addPrice[from];
+    Object.keys(SUPPORTED_CURRENCIES).forEach((to) => {
+      if (from === to) return;
+      option.addPrice[to] = swapCurrencies(amount, from, to);
+    });
   };
 </script>
 
@@ -40,19 +59,26 @@
           <button use:dragger class:moving>
             <i class="ri-draggable" />
           </button>
-          <Input bind:value={option.label}>
-            <slot slot="label">Option label</slot>
-          </Input>
-          <Input bind:value={option.addPrice} class="price">
-            <slot slot="label">Price</slot>
-            <slot slot="iconRight">
-              <ToolTip
-                text="will increase or decrice the price by this amount when the user selects this variation"
-              >
-                <i class="ri-information-line" />
-              </ToolTip>
-            </slot>
-          </Input>
+          <div class="inputs">
+            <Input bind:value={option.label}>
+              <slot slot="label">Option label</slot>
+            </Input>
+            <Input
+              bind:value={option.addPrice[$currency]}
+              on:change={updatePrices(option.id)}
+              class="price"
+              type="diff"
+            >
+              <slot slot="label">Price</slot>
+              <slot slot="iconRight">
+                <ToolTip
+                  text="will increase or decrice the price by this amount when the user selects this variation"
+                >
+                  <i class="ri-information-line" />
+                </ToolTip>
+              </slot>
+            </Input>
+          </div>
           <button on:click={removeOption(option.id)}>
             <i class="ri-close-line" />
           </button>
@@ -78,6 +104,12 @@
     background-color: var(--neutral-2);
     gap: 0.5rem;
     padding: 0.5rem 0;
+    .inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+    }
     :global(.input) {
       flex: 2;
     }

@@ -1,6 +1,6 @@
 import { writable, derived } from "svelte/store";
 
-export const SUPORTED_CURRENCIES = {
+export const SUPPORTED_CURRENCIES = {
   USD: {
     decimalPlace: 100n,
     symbolPos: "left",
@@ -30,11 +30,11 @@ export const exchange = (exchangeRates) => (amount, of, to) => {
 
 export const newCurrencyStore = () => {
   /**
-   * @type {import("svelte/store").Writable<keyof typeof SUPORTED_CURRENCIES>}
+   * @type {import("svelte/store").Writable<keyof typeof SUPPORTED_CURRENCIES>}
    */
   const currency = writable(DEFAUL_CURRENCY);
   const currencyData = derived(currency, ($curr) => {
-    return SUPORTED_CURRENCIES[$curr];
+    return SUPPORTED_CURRENCIES[$curr];
   });
 
   const exchangeRates = writable({

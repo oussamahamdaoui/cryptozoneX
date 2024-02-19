@@ -86,7 +86,14 @@ export const copy = (obj) => {
   if (typeof obj !== "object") {
     return obj;
   }
-  return JSON.parse(JSON.stringify(obj));
+  const serialize = (_, v) =>
+    typeof v === "bigint" ? `BigInt(${v.toString()})` : v;
+  const decerialize = (key, value) => {
+    return value.startsWith && value.startsWith("BigInt(")
+      ? BigInt(value.slice(7, -1))
+      : value;
+  };
+  return JSON.parse(JSON.stringify(obj, serialize), decerialize);
 };
 
 /**

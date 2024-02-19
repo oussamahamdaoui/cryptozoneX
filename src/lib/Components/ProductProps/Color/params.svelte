@@ -1,4 +1,6 @@
 <script>
+  import { getContext } from "svelte";
+  import { SUPPORTED_CURRENCIES, exchange } from "../../../Stores/currency";
   import { getUid, swap } from "../../../utils";
   import ColorPicker from "../../ColorPicker.svelte";
   import Drag from "../../Drag.svelte";
@@ -10,11 +12,20 @@
     colors: [],
     label: `Color`,
   };
+
+  const exchangeRates = getContext("exchangeRates");
+  let swapCurrencies = exchange($exchangeRates);
+
+  const currency = getContext("currency");
+
   const addColor = () => {
     props.colors.push({
       name: "",
       id: getUid(),
-      addPrice: 0,
+      addPrice: Object.keys(SUPPORTED_CURRENCIES).reduce((acc, c) => {
+        acc[c] = 0n;
+        return acc;
+      }, {}),
     });
     props = props;
   };
@@ -26,6 +37,16 @@
     swap(props.colors, idxA, idxB);
     props = props;
   };
+
+  const updatePrices = (id) => () => {
+    const color = props.colors.find((c) => c.id === id);
+    const from = $currency;
+    const amount = color.addPrice[from];
+    Object.keys(SUPPORTED_CURRENCIES).forEach((to) => {
+      if (from === to) return;
+      color.addPrice[to] = swapCurrencies(amount, from, to);
+    });
+  };
 </script>
 
 <div class="params">
@@ -35,34 +56,43 @@
   {#if props.colors.length === 0}
     <p class="empty">No colors for this variation</p>
   {/if}
-  <Drag let:swap {onSwap}
-    >{#each props.colors as color (color.id)}
+  <Drag let:swap {onSwap}>
+    {#each props.colors as color (color.id)}
       <Draggable {swap} let:dragger let:moving>
-        <div class="wrap">
+        <div class="color">
           <button use:dragger class:moving>
             <i class="ri-draggable" />
           </button>
-          <ColorPicker bind:value={color.color} />
-          <Input bind:value={color.name}>
-            <slot slot="label">Color Name</slot>
-          </Input>
-          <Input value={color.addPrice} class="price">
-            <slot slot="label">Price</slot>
-            <slot slot="iconRight">
-              <ToolTip
-                text="will increase or decrice the price by this amount when the user selects this variation"
-              >
-                <i class="ri-information-line" />
-              </ToolTip>
-            </slot>
-          </Input>
+          <div class="color-params">
+            <div class="wrap">
+              <ColorPicker bind:value={color.color} />
+              <Input bind:value={color.name}>
+                <slot slot="label">Color Name</slot>
+              </Input>
+            </div>
+            <Input
+              type="diff"
+              bind:value={color.addPrice[$currency]}
+              on:change={updatePrices(color.id)}
+              class="price"
+            >
+              <slot slot="label">Price</slot>
+              <slot slot="iconRight">
+                <ToolTip
+                  text="will increase or decrice the price by this amount when the user selects this variation"
+                >
+                  <i class="ri-information-line" />
+                </ToolTip>
+              </slot>
+            </Input>
+          </div>
           <button on:click={removeColor(color.id)}>
             <i class="ri-close-line" />
           </button>
         </div>
       </Draggable>
-    {/each}</Drag
-  >
+    {/each}
+  </Drag>
   <button class="addColor" on:click={addColor}>
     <i class="ri-add-line" />
     {`New color`}
@@ -79,27 +109,22 @@
     :global(.drag:empty) {
       display: none;
     }
-    .wrap {
+    .color {
       display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
       gap: 0.5rem;
-      padding: 0.5rem 0;
       background-color: var(--neutral-2);
-      .ri-information-line {
-        align-self: center;
-        margin-right: 0.5rem;
-        color: var(--neutral-9);
-      }
-      :global(.input) {
-        flex: 2;
-      }
-      :global(.input.price) {
+      .color-params {
         flex: 1;
-      }
-      &.moving {
-        button {
-          &:first-of-type {
-            cursor: grabbing;
-          }
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        .ri-information-line {
+          align-self: center;
+          margin-right: 0.5rem;
+          color: var(--neutral-9);
         }
       }
       button {
@@ -112,6 +137,24 @@
         &:last-of-type {
           &:hover {
             color: var(--red-11);
+          }
+        }
+      }
+    }
+    .wrap {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      :global(.input) {
+        flex: 2;
+      }
+      :global(.input.price) {
+        flex: 1;
+      }
+      &.moving {
+        button {
+          &:first-of-type {
+            cursor: grabbing;
           }
         }
       }

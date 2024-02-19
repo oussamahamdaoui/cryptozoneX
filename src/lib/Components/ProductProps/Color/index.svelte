@@ -1,4 +1,7 @@
 <script>
+  import { getContext } from "svelte";
+  import Price from "../../Price.svelte";
+
   export let colors = [];
   export let label = "Color:";
   export let withCheck = true;
@@ -43,13 +46,24 @@
     const luminance = 0.2126 * rgb[0] + 0.7152 * rgb[0] + 0.0722 * rgb[0];
     return luminance < 140 ? "#ffffff" : "#000000";
   };
+
+  const showSelectedHovered = (..._) => {
+    return hovered || (selected ? selected : "");
+  };
+
+  const currency = getContext("currency");
+
+  $: opt = colors.find((e) => e.name === hovered || e.name === selected);
 </script>
 
 <svelte:window on:keyup={keypress} />
 
 <div class="radio-selector {cls}">
   <div class="selected">
-    {label} <span>{hovered || (selected ? selected : "")}</span>
+    {label} <span>{showSelectedHovered(hovered, selected)}</span>
+    {#if opt && opt.addPrice[$currency]}
+      <Price price={opt.addPrice[$currency]} withSign></Price>
+    {/if}
   </div>
   <div class="radios" bind:this={optionsEl}>
     {#each colors as option}

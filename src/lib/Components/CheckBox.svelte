@@ -11,7 +11,6 @@
       toggle(e);
     } else {
       checked = !checked;
-      console.log("heee");
     }
   };
 </script>

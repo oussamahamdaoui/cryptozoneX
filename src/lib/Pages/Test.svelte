@@ -1,24 +1,17 @@
 <script>
-  import DatePicker from "../Components/DatePicker.svelte";
+  import Input from "../Components/Input.svelte";
   const props = {
-    date: {
-      type: "date",
-    },
-    range: {
-      type: "range",
-    },
+    b: {},
+    a: {},
   };
-  let v = "date";
+  let v = "a";
   const toggle = () => {
-    v = v === "date" ? "range" : "date";
-    console.log(props[v].value);
+    v = v === "a" ? "b" : "a";
   };
 </script>
 
 <div>
-  <DatePicker bind:value={props[v].value} bind:type={props[v].type}>
-    <slot slot="label">hello</slot>
-  </DatePicker>
+  <Input type="diff" bind:value={props[v].value}></Input>
   <button on:click={toggle}>Toggle</button>
 </div>
 

@@ -14,7 +14,7 @@
   import Link from "../../Components/Routing/Link.svelte";
   import { getContext, setContext } from "svelte";
   import {
-    SUPORTED_CURRENCIES,
+    SUPPORTED_CURRENCIES,
     exchange,
     newCurrencyStore,
   } from "../../Stores/currency";
@@ -92,7 +92,7 @@
   const recalculatePrices = () => {
     const from = selectedCurrency;
     const amount = properties.productPrices[selectedCurrency];
-    Object.keys(SUPORTED_CURRENCIES).forEach((to) => {
+    Object.keys(SUPPORTED_CURRENCIES).forEach((to) => {
       if (from === to) return;
       properties.productPrices[to] = swapCurrencies(amount, from, to);
     });
@@ -130,7 +130,7 @@
         <Input
           bind:value={properties.productPrices[selectedCurrency]}
           type="price"
-          digits={SUPORTED_CURRENCIES[selectedCurrency].decimalPlace}
+          currency={selectedCurrency}
           on:change={recalculatePrices}
         >
           <slot slot="label">{$t("seller.product.productPriceLabel")}</slot>
@@ -187,7 +187,7 @@
           <Input
             bind:value={properties.promotions[selectedCurrency]}
             type="price"
-            digits={SUPORTED_CURRENCIES[selectedCurrency].decimalPlace}
+            currency={selectedCurrency}
           >
             <slot slot="label">{$t("seller.product.productPriceLabel")}</slot>
           </Input>
