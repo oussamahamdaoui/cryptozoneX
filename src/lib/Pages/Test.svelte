@@ -1,34 +1,35 @@
 <script>
-  import Input from "../Components/Input.svelte";
-  const props = {
-    b: {},
-    a: {},
-  };
-  let v = "a";
-  const toggle = () => {
-    v = v === "a" ? "b" : "a";
-  };
+  import NestedSelector from "../Components/NestedSelector.svelte";
+  const three = [
+    { name: "color", children: [{ name: "red" }, { name: "green" }] },
+    {
+      name: "size",
+      children: [{ name: "s" }, { name: "m" }, { name: "l" }, { name: "xl" }],
+    },
+    {
+      name: "checkbox",
+    },
+  ];
 </script>
 
 <div>
-  <Input type="diff" bind:value={props[v].value}></Input>
-  <button on:click={toggle}>Toggle</button>
+  <NestedSelector children={three} name="Variations"></NestedSelector>
 </div>
 
 <style lang="scss">
   div {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
     justify-content: center;
     flex-direction: column;
     min-height: 100vh;
-    width: 50%;
+    width: 20%;
     margin-left: auto;
     margin-right: auto;
     gap: 1rem;
-    button {
-      background-color: var(--neutral-1);
-    }
+    // button {
+    //   background-color: var(--neutral-1);
+    // }
   }
 </style>

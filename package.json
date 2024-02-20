@@ -23,6 +23,7 @@
     "fastify": "^4.26.1",
     "i18n-js": "^4.3.0",
     "jsonwebtoken": "^9.0.1",
-    "remixicon": "^4.0.1"
+    "remixicon": "^4.0.1",
+    "three": "^0.161.0"
   }
 }

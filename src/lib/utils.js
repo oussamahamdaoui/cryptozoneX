@@ -88,8 +88,8 @@ export const copy = (obj) => {
   }
   const serialize = (_, v) =>
     typeof v === "bigint" ? `BigInt(${v.toString()})` : v;
-  const decerialize = (key, value) => {
-    return value.startsWith && value.startsWith("BigInt(")
+  const decerialize = (_, value) => {
+    return value?.startsWith && value.startsWith("BigInt(")
       ? BigInt(value.slice(7, -1))
       : value;
   };

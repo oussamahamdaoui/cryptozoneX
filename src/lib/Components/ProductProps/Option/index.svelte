@@ -4,10 +4,11 @@
   import Price from "../../Price.svelte";
   export let options = [];
   export let label = "";
+  export let value = options[0]?.id;
   const currency = getContext("currency");
 </script>
 
-<DropDown value={options[0]?.id}>
+<DropDown bind:value>
   <slot slot="label">{label}</slot>
   <slot slot="value" let:value>
     {options.find((e) => e.id === value)?.label || ""}

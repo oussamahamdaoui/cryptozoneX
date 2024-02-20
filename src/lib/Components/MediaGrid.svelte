@@ -40,6 +40,7 @@
     const intersection = new Set(images.find((i) => i.id === fst)?.tags || []);
     selectedImages.forEach((e) => {
       const img = images.find((i) => i.id === e);
+      if (!img) return;
       img.tags.forEach((t) => {
         if (!intersection.has(t)) {
           intersection.delete(t);
@@ -270,7 +271,7 @@
     display: grid;
     flex: 1;
     overflow-y: auto;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
     gap: 2px;
     align-content: start;
     border-radius: 5px;
@@ -338,9 +339,6 @@
             opacity: 0;
           }
         }
-        :global(img) {
-          transform: scale(1.1);
-        }
       }
       :global(img) {
         width: 100%;
@@ -348,7 +346,6 @@
         position: absolute;
         object-fit: cover;
         object-position: center center;
-        transition: transform 100ms ease-in-out;
       }
       &.selected {
         border: 1px solid var(--primary-11);

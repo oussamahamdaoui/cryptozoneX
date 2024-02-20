@@ -26,6 +26,7 @@
     newLangContext,
   } from "../../Stores/lang";
   import DatePicker from "../../Components/DatePicker.svelte";
+  import ProductImages from "./Components/ProductImages.svelte";
 
   const t = getContext("t");
 
@@ -196,9 +197,6 @@
           </DatePicker>
         </div>
       {/if}
-
-      <h3>{"Product Images"}</h3>
-      <Media limit={5}></Media>
       <h3>{$t("seller.product.variationsTitle")}</h3>
       <div class="props-list">
         <Drag let:swap onSwap={swapVariants}>
@@ -240,6 +238,7 @@
           </ToolTip>
         </button>
       </div>
+      <ProductImages></ProductImages>
     </div>
     <div class="preview">
       <ProductPreview id="preview" />

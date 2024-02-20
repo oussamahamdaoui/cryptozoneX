@@ -1,14 +1,18 @@
 <script>
+  import { getContext } from "svelte";
+  import Price from "../../Price.svelte";
+
   export let variants = [];
   export let label = "Color:";
   let cls = "";
   export { cls as class };
   let selected = variants[0]?.name;
   let hovered = "";
+  let optionsEl;
   let select = (s) => {
     selected = s;
   };
-  let optionsEl;
+  const currency = getContext("currency");
   const keypress = (e) => {
     if (e.key === "ArrowLeft" && optionsEl.contains(document.activeElement)) {
       e.preventDefault();
@@ -29,13 +33,24 @@
       }
     }
   };
+  const showSelectedHovered = (..._) => {
+    return hovered || (selected ? selected : "");
+  };
+  const getPreview = (..._) => {
+    const h = variants.find((e) => e.name === hovered);
+    return h || variants.find((e) => e.name === selected);
+  };
+  $: opt = getPreview(hovered, selected);
 </script>
 
 <svelte:window on:keyup={keypress} />
 
 <div class="radio-selector {cls}">
   <div class="selected">
-    {label} <span>{hovered || (selected ? selected : "")}</span>
+    {label} <span>{showSelectedHovered(hovered, selected)}</span>
+    {#if opt && opt.addPrice[$currency]}
+      <Price price={opt.addPrice[$currency]} withSign></Price>
+    {/if}
   </div>
   <div class="radios" bind:this={optionsEl}>
     {#each variants as option}

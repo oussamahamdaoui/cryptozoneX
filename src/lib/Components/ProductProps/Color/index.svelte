@@ -7,12 +7,14 @@
   export let withCheck = true;
   let cls = "";
   export { cls as class };
-  let selected = colors[0]?.name;
+  export let value = colors[0]?.name;
   let hovered = "";
-  let select = (s) => {
-    selected = s;
-  };
   let optionsEl;
+  const currency = getContext("currency");
+
+  let select = (s) => {
+    value = s;
+  };
   const keypress = (e) => {
     if (e.key === "ArrowLeft" && optionsEl.contains(document.activeElement)) {
       e.preventDefault();
@@ -43,24 +45,26 @@
       .replace(")", "")
       .split(",")
       .map((e) => parseInt(e));
-    const luminance = 0.2126 * rgb[0] + 0.7152 * rgb[0] + 0.0722 * rgb[0];
+    const luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
     return luminance < 140 ? "#ffffff" : "#000000";
   };
 
   const showSelectedHovered = (..._) => {
-    return hovered || (selected ? selected : "");
+    return hovered || (value ? value : "");
   };
 
-  const currency = getContext("currency");
-
-  $: opt = colors.find((e) => e.name === hovered || e.name === selected);
+  const getPreview = (..._) => {
+    const h = colors.find((e) => e.name === hovered);
+    return h || colors.find((e) => e.name === value);
+  };
+  $: opt = getPreview(hovered, value);
 </script>
 
 <svelte:window on:keyup={keypress} />
 
 <div class="radio-selector {cls}">
   <div class="selected">
-    {label} <span>{showSelectedHovered(hovered, selected)}</span>
+    {label} <span>{showSelectedHovered(hovered, value)}</span>
     {#if opt && opt.addPrice[$currency]}
       <Price price={opt.addPrice[$currency]} withSign></Price>
     {/if}
@@ -69,7 +73,7 @@
     {#each colors as option}
       <button
         class="radio"
-        class:isSelected={option.name === selected}
+        class:isSelected={option.name === value}
         class:with-check={withCheck}
         class:defaultColor={!option.color}
         style="--color:{option.color}; --fg:{inverse(option.color)}"
@@ -87,7 +91,7 @@
           hovered = "";
         }}
       >
-        {#if option.name === selected && withCheck}
+        {#if option.name === value && withCheck}
           <i class="ri-check-line" />
         {:else if !withCheck}
           <span>{option.name}</span>
@@ -105,7 +109,8 @@
   }
   .radios {
     display: flex;
-    gap: 0.5rem;
+    gap: 1.5rem;
+    margin-top: 1rem;
   }
   .radio {
     background-color: var(--color);
@@ -116,21 +121,35 @@
     justify-content: center;
     align-items: center;
     color: var(--neutral-1);
-    border: 2px solid var(--neutral-7);
+    border: none;
     outline: none;
     font-size: 0.5rem;
+    position: relative;
     &.defaultColor {
       background-color: var(--neutral-2);
       color: var(--neutral-12);
       border: 1px solid var(--neutral-7);
     }
+    &::after {
+      position: absolute;
+      width: calc(100% + 0.5rem);
+      height: calc(100% + 0.5rem);
+      background-color: transparent;
+      content: "";
+      border-radius: 100%;
+      border: 2px solid transparent;
+    }
     &:focus,
     &:hover {
-      border: 2px solid var(--primary-8);
+      &::after {
+        border: 1px solid var(--neutral-8);
+      }
     }
     &.isSelected {
-      border: 2px solid var(--primary-9);
       font-weight: 900;
+      &::after {
+        border: 2px solid var(--primary-9);
+      }
       &.defaultColor {
         color: var(--primary-12);
         background-color: var(--primary-2);

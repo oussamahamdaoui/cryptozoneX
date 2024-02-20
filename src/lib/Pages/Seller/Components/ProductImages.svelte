@@ -1,26 +1,19 @@
 <script>
-  import { getContext } from "svelte";
   import { getUid, swap } from "../../../utils";
-  import Drag from "../../Drag.svelte";
-  import Draggable from "../../Draggable.svelte";
-  import Input from "../../Input.svelte";
-  import Media from "../../Media.svelte";
-  import ToolTip from "../../ToolTip.svelte";
-  import { SUPPORTED_CURRENCIES, exchange } from "../../../Stores/currency";
-  export let props;
-  $: props = props ?? {
+  import Drag from "../../../Components/Drag.svelte";
+  import Input from "../../../Components/Input.svelte";
+  import Draggable from "../../../Components/Draggable.svelte";
+  import Media from "../../../Components/Media.svelte";
+
+  let props = {
     variants: [],
-    label: ``,
   };
+
   const addVarient = () => {
     const id = getUid();
     props.variants.push({
       name: "",
       id,
-      addPrice: Object.keys(SUPPORTED_CURRENCIES).reduce((acc, c) => {
-        acc[c] = 0n;
-        return acc;
-      }, {}),
     });
     props = props;
     showMedia[id] = false;
@@ -39,28 +32,11 @@
     showMedia[id] = !showMedia[id];
     showMedia = showMedia;
   };
-
-  const currency = getContext("currency");
-  const exchangeRates = getContext("exchangeRates");
-  let swapCurrencies = exchange($exchangeRates);
-
-  const updatePrices = (id) => () => {
-    const option = props.variants.find((c) => c.id === id);
-    const from = $currency;
-    const amount = option.addPrice[from];
-    Object.keys(SUPPORTED_CURRENCIES).forEach((to) => {
-      if (from === to) return;
-      option.addPrice[to] = swapCurrencies(amount, from, to);
-    });
-  };
 </script>
 
 <div class="params">
-  <Input bind:value={props.label}>
-    <slot slot="label">Value label</slot>
-  </Input>
   {#if props.variants.length === 0}
-    <p class="empty">No options in this variation</p>
+    <p class="empty">No images for this product</p>
   {/if}
   <Drag let:swap {onSwap}>
     {#each props.variants as varient (varient.id)}
@@ -82,21 +58,6 @@
                 <slot slot="label">Variation Name</slot>
               </Input>
             </div>
-            <Input
-              bind:value={varient.addPrice[$currency]}
-              on:change={updatePrices(varient.id)}
-              type="diff"
-              class="price"
-            >
-              <slot slot="label">Price</slot>
-              <slot slot="iconRight">
-                <ToolTip
-                  text="will increase or decrice the price by this amount when the user selects this variation"
-                >
-                  <i class="ri-information-line" />
-                </ToolTip>
-              </slot>
-            </Input>
           </div>
 
           <button class="remove-image" on:click={removeVarient(varient.id)}>
@@ -105,6 +66,7 @@
           {#if showMedia[varient.id]}
             <Media
               limit={1}
+              defaultPanel="gallery"
               bind:value={varient.image}
               on:submit={hideMedia(varient.id)}
             ></Media>
@@ -115,7 +77,7 @@
   </Drag>
   <button class="addVarient" on:click={addVarient}>
     <i class="ri-add-line" />
-    {`New varient`}
+    {`Add image`}
   </button>
 </div>
 
@@ -140,6 +102,7 @@
       gap: 0.5rem;
       padding: 0.5rem 0;
       background-color: var(--neutral-2);
+      --bg: var(--neutral-2);
       position: relative;
       align-items: center;
       :global(.media) {
@@ -164,18 +127,12 @@
           object-fit: cover;
         }
       }
-      .ri-information-line {
-        align-self: center;
-        margin-right: 0.5rem;
-        color: var(--neutral-9);
-      }
       :global(.input) {
         flex: 2;
       }
       :global(.input.price) {
         flex: 1;
       }
-
       button {
         background-color: transparent;
         border: none;
@@ -186,7 +143,6 @@
             cursor: grabbing;
           }
         }
-
         &.remove-image {
           &:hover {
             color: var(--red-11);

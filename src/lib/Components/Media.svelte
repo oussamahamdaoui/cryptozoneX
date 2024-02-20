@@ -338,6 +338,9 @@
       border-bottom: none !important;
       background-color: transparent !important;
     }
+    :global(.head .selected) {
+      color: var(--primary-9);
+    }
     :global(.tabs),
     :global(.tab) {
       display: contents;
